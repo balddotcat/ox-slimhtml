@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+/Applications/MacPorts/Emacs.app/Contents/MacOS/Emacs \
+    -batch \
+    -l ert \
+    -l org-html-slim-tests.el \
+    -f ert-run-tests-batch-and-exit
