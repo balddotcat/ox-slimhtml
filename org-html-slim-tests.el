@@ -3,7 +3,7 @@
 (package-initialize)
 
 (require 's)
-(load (expand-file-name "../org-html-slim.el"
+(load (expand-file-name "./org-html-slim.el"
                         (file-name-directory load-file-name)))
 
 
