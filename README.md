@@ -1,7 +1,5 @@
 **[org-html-slim](http://manifold.io/project/org-html-slim)** is an **HTML export backend** for **org-mode**. It is a set of translators for common org elements which output minimal HTML, and use only a limited amount of pre-defined logic.
 
--   [source available on github](https://github.com/elolaszlo/org-html-slim)
-
 # setup
 
     (load "~/lisp/org-html-slim.el")
