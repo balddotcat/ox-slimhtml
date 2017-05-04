@@ -34,14 +34,43 @@
     (format "<em>%s</em>" contents)))
 
 (defun slimhtml-link (link contents info)
-  contents)
+  (if (slimhtml-immediate-child-of-p link 'link)
+      (org-element-property :raw-link link)
+    (if (not contents)
+        (format "<em>%s</em>" (org-element-property :path link))
+      (let ((link-type (org-element-property :type link))
+            (href (org-element-property :raw-link link))
+            (attributes (if (slimhtml-immediate-child-of-p link 'paragraph)
+                            (slimhtml:attr (org-export-get-parent link)) "")))
+        (cond ((string= "file" link-type)
+               (let ((path (org-element-property :path link)))
+                 (if (file-name-absolute-p path)
+                     (setq href (concat "file:" path))
+                   (let ((html-extension (plist-get info :html-extension))
+                         (home (plist-get info :html-link-home))
+                         (use-abs-url (plist-get info :html-link-use-abs-url)))
+                     (when (and home use-abs-url)
+                       (when (cl-search "./" path :end1 2 :end2 2) (setq path (cl-subseq path 2)))
+                       (setq path (concat (file-name-as-directory home) path)))
+                     (when (and org-html-link-org-files-as-html
+                                html-extension
+                                (string= "org" (downcase (file-name-extension path))))
+                       (setq path (concat (file-name-sans-extension path) "." html-extension)))
+                     (setq href path)))))
+              ((member link-type '("http" "https"))
+               (setq attributes (concat attributes " target=\"_blank\"")))
+              ((string= "fuzzy" link-type)
+               (setq href (org-export-solidify-link-text href))))
+        (format "<a href=\"%s\"%s>%s</a>" href attributes contents)))))
 
 (defun slimhtml-paragraph (paragraph contents info)
   (when contents
     (if (or (slimhtml-immediate-child-of-p paragraph 'item)
             (slimhtml-immediate-child-of-p paragraph 'special-block))
         contents
-      (format "<p%s>%s</p>" (slimhtml:attr paragraph) contents))))
+      (if (slimhtml-has-immediate-child-of-p paragraph 'link)
+          (format "<p>%s</p>" contents)
+        (format "<p%s>%s</p>" (slimhtml:attr paragraph) contents)))))
 
 (defun slimhtml-section (section contents info)
   contents)
@@ -87,6 +116,11 @@
          (= (org-element-property :begin element)
             (org-element-property :contents-begin container)))))
 
+(defun slimhtml-has-immediate-child-of-p (element element-type)
+  (org-element-map element element-type
+    (lambda (link) (= (org-element-property :begin link)
+                      (org-element-property :contents-begin element)))
+    nil t))
 
 (org-export-define-backend 'slimhtml
   '((bold . slimhtml-bold)
