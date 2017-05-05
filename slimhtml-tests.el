@@ -48,14 +48,16 @@
   (should-render-as "<p><a href=\"link\">content</a></p>"
                     "[[link][content]]")
   (should-render-as "<p><a href=\"link.org\">content</a></p>"
-                    "[[link.org][content]]")
+                    "[[link.org][content]]" '(:html-link-org-as-html nil))
   "converts file links from .org to :html-extension"
   (should-render-as "<p><a href=\"link.org\">content</a></p>"
-                    "[[link.org][content]]" '(:html-extension "html"))
+                    "[[link.org][content]]" '(:html-link-org-as-html nil))
   (should-render-as "<p><a href=\"link.org\">content</a></p>"
-                    "[[file:link.org][content]]")
+                    "[[file:link.org][content]]" '(:html-link-org-as-html nil))
   (should-render-as "<p><a href=\"link.html\">content</a></p>"
-                    "[[file:link.org][content]]" '(:html-extension "html"))
+                    "[[file:link.org][content]]" '(:html-link-org-as-html t :html-extension "html"))
+  (should-render-as "<p><a href=\"link\">content</a></p>"
+                    "[[file:link.org][content]]" '(:html-link-org-as-html t :html-extension ""))
   "absolute file paths are retained"
   (should-render-as "<p><a href=\"file:///link.org\">content</a></p>"
                     "[[file:/link.org][content]]")
@@ -78,10 +80,10 @@
   "relative paths"
   (should-render-as "<p><a href=\"http://localhost/link.org\">content</a></p>"
                     "[[file:./link.org][content]]"
-                    '(:html-link-use-abs-url t :html-link-home "http://localhost/"))
+                    '(:html-link-use-abs-url t :html-link-home "http://localhost/" :html-link-org-as-html nil))
   (should-render-as "<p><a href=\"http://localhost/../link.org\">content</a></p>"
                     "[[file:../link.org][content]]"
-                    '(:html-link-use-abs-url t :html-link-home "http://localhost/")))
+                    '(:html-link-use-abs-url t :html-link-home "http://localhost/" :html-link-org-as-html nil)))
 
 (ert-deftest slimhtml-paragraph ()
   (should-render-as "<p>this</p>" "this")
