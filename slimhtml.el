@@ -176,4 +176,23 @@
     (:html-head-extra "HTML_HEAD_EXTRA" nil org-html-head-extra newline)))
 
 
+;;;###autoload
+(defun slimhtml-publish-to-html (plist filename pub-dir)
+  "Publish an org file to HTML using org-html-slim.
+
+FILENAME is the filename of the Org file to be published.  PLIST
+is the property list for the given project.  PUB-DIR is the
+publishing directory.
+
+Return output file name."
+  (let ((html-extension (or (plist-get plist :html-extension) org-html-extension)))
+    (org-publish-org-to 'slimhtml
+                        filename
+                        (if (and html-extension (not (string= "" html-extension)))
+                            (concat "." html-extension) "")
+                        plist
+                        pub-dir)))
+
+
 (provide 'slimhtml)
+;;; slimhtml.el ends here
