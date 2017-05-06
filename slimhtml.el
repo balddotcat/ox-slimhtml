@@ -6,7 +6,6 @@
 ;; Description: a minimal HTML org export backend
 ;; Homepage: http://manifold.io/project/slimhtml
 ;; Version: 0.2.0
-;; Package-Requires:
 ;;
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -21,14 +20,10 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-;;; Commentary:
-;;
 
 ;;; Code:
-(require 'ox-publish)
 (require 'ox-html)
 (require 'cl)
-
 
 (defun slimhtml-bold (bold contents info)
   "Transcode BOLD from Org to HTML.
