@@ -1,22 +1,73 @@
+;;; slimhtml --- a minimal HTML org export backend
+;; Copyright (C) Elo Laszlo 2017
 
+;; Author: Elo Laszlo <laszlo@manifold.io>
+;; Created: August 2016
+;; Description: a minimal HTML org export backend
+;; Homepage: http://manifold.io/project/slimhtml
+;; Version: 0.2.0
+;; Package-Requires:
+;;
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+;;
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+;;; Commentary:
+;;
+
+;;; Code:
 (require 'ox-publish)
 (require 'ox-html)
 (require 'cl)
 
 
 (defun slimhtml-bold (bold contents info)
+  "Transcode BOLD from Org to HTML.
+
+CONTENTS is the text with bold markup.
+INFO is a plist holding contextual information.
+--
+*this*"
   (when contents
     (format "<strong>%s</strong>" contents)))
 
 (defun slimhtml-export-block (export-block contents info)
+  "Transcode an EXPORT-BLOCK element from Org to HTML.
+
+CONTENTS is nil. INFO is a plist holding contextual information.
+--
+#+BEGIN_HTMLthis#+END_HTML"
   (let ((contents (org-element-property :value export-block)))
     (when contents (org-remove-indentation contents))))
 
 (defun slimhtml-export-snippet (export-snippet contents info)
+  "Transcode a EXPORT-SNIPPET object from Org to HTML.
+
+CONTENTS is nil. INFO is a plist holding contextual information.
+--
+@@html:this@@"
   (let ((contents (org-element-property :value export-snippet)))
     (when contents contents)))
 
 (defun slimhtml-headline (headline contents info)
+  "Transcode HEADLINE from Org to HTML.
+
+CONTENTS is the section as defined under the HEADLINE.
+INFO is a plist holding contextual information.
+--
+* this
+ :PROPERTIES:
+ :attr_html: :class this
+ :END:"
   (let ((text (org-export-data (org-element-property :title headline) info))
         (level (org-export-get-relative-level headline info))
         (attributes (org-element-property :ATTR_HTML headline)))
@@ -27,6 +78,13 @@
     (format "<h%d%s>%s</h%d>%s" level (or attributes "") text level (or contents ""))))
 
 (defun slimhtml-inner-template (contents info)
+  "Return body of document string after HTML conversion.
+
+CONTENTS is the transcoded contents string.
+INFO is a plist holding export options.
+--
+#+HTML_CONTAINER: this id=\"this\"
+org-html-container-element"
   (let ((container (plist-get info :html-container)))
     (if container
         (format "<%s>%s</%s>" container contents
@@ -34,10 +92,32 @@
       contents)))
 
 (defun slimhtml-italic (italic contents info)
+  "Transcode ITALIC from Org to HTML.
+
+CONTENTS is the text with italic markup.
+INFO is a plist holding contextual information.
+--
+/this/"
   (when contents
     (format "<em>%s</em>" contents)))
 
 (defun slimhtml-link (link contents info)
+  "Transcode LINK from Org to HTML.
+
+CONTENTS is the text of the link.
+INFO is a plist holding contextual information.
+--
+[[this][contents]]
+
+#+OPTIONS: html-link-org-files-as-html:t
+org-html-link-org-files-as-html
+#+HTML_EXTENSION: html
+org-html-extension
+#+HTML_LINK_HOME: /this
+org-html-link-home
+
+#+attr_html: :class this\n[[link][content]]
+http and https links; target=\"_blank\""
   (if (slimhtml-immediate-child-of-p link 'link)
       (org-element-property :raw-link link)
     (if (not contents)
@@ -69,6 +149,13 @@
         (format "<a href=\"%s\"%s>%s</a>" href attributes contents)))))
 
 (defun slimhtml-paragraph (paragraph contents info)
+  "Transcode a PARAGRAPH element from Org to HTML.
+
+CONTENTS is the contents of the paragraph.
+INFO is a plist holding contextual information.
+--
+#+attr_html: :class this
+this"
   (when contents
     (if (or (slimhtml-immediate-child-of-p paragraph 'item)
             (slimhtml-immediate-child-of-p paragraph 'special-block))
@@ -78,9 +165,20 @@
         (format "<p%s>%s</p>" (slimhtml:attr paragraph) contents)))))
 
 (defun slimhtml-section (section contents info)
+  "Transcode a SECTION element from Org to HTML.
+
+CONTENTS is the contents of the section.
+INFO is a plist holding contextual information."
   contents)
 
 (defun slimhtml-plain-list (plain-list contents info)
+  "Transcode a LIST string from Org to HTML.
+
+CONTENTS is the contents of the list element.
+INFO is a plist holding contextual information.
+--
+#+attr_html: :class this
+- this"
   (when contents
     (let ((type (case (org-element-property :type plain-list)
                   (ordered "ol")
@@ -89,20 +187,53 @@
       (format "<%s%s>%s</%s>" type (slimhtml:attr plain-list) contents type))))
 
 (defun slimhtml-plain-text (plain-text info)
+  "Transcode a TEXT string from Org to HTML.
+
+TEXT is the string to transcode.
+INFO is a plist holding contextual information."
   (org-html-encode-plain-text plain-text))
 
 (defun slimhtml-special-block (special-block contents info)
+  "Transcode SPECIAL-BLOCK from Org to HTML.
+
+CONTENTS is the text within the #+BEGIN_ and #+END_ markers.
+INFO is a plist holding contextual information.
+--
+#+attr_html: :type text/css
+#+BEGIN_STYLEthis#+END_STYLE"
   (when contents
     (let ((block-type (downcase (org-element-property :type special-block))))
       (format "<%s%s>%s</%s>" block-type (slimhtml:attr special-block) contents block-type))))
 
 (defun slimhtml-src-block (src-block contents info)
+  "Transcode CODE from Org to HTML.
+
+CONTENTS is the text of a #+BEGIN_SRC...#+END_SRC block.
+INFO is a plist holding contextual information.
+--
+#+BEGIN_SRCthis#+END_SRC"
   (let ((code (org-html-format-code src-block info)))
     (when code
       (format "<code class=\"%s\"><pre>%s</pre></code>"
               (org-element-property :language src-block) code))))
 
 (defun slimhtml-template (contents info)
+  "Return full document string after HTML conversion.
+
+CONTENTS is the transcoded contents string.
+INFO is a plist holding export options.
+--
+#+HTML_DOCTYPE: | org-html-doctype
+#+HTML_HEAD: | org-html-head
+#+TITLE:
+#+HTML_HEAD_EXTRA: | org-html-head-extra
+#+HTML_CONTAINER: | org-html-container-element
+#+HTML_PREAMBLE:
+#+HTML_POSTAMBLE:
+#+OPTIONS: html-link-org-files-as-html:t | org-html-link-org-files-as-html
+#+OPTIONS: html-link-use-abs-url:t | org-html-link-use-abs-url
+#+HTML_EXTENSION: | org-html-extension
+#+HTML_LINK_HOME: | org-html-link-home"
   (let ((doctype (assoc (plist-get info :html-doctype) org-html-doctype-alist))
         (language (plist-get info :language))
         (head (plist-get info :html-head))
@@ -125,12 +256,17 @@
      "</html>")))
 
 (defun slimhtml-verbatim (verbatim contents info)
+  "Transcode VERBATIM string from Org to HTML.
+
+CONTENTS is nil.
+INFO is a plist holding contextual information."
   (let ((contents (org-html-encode-plain-text (org-element-property :value verbatim))))
     (when contents
       (format "<kbd>%s</kbd>" contents))))
 
 
 (defun slimhtml:attr (element &optional property)
+  "returns ELEMENT's HTML attributes as a string"
   (let ((attributes (org-export-read-attribute :attr_html element property)))
     (if attributes (concat " " (org-html--make-attribute-string attributes)) "")))
 
@@ -146,6 +282,7 @@
                       (org-element-property :contents-begin element)))
     nil t))
 
+;; backend definition
 (org-export-define-backend 'slimhtml
   '((bold . slimhtml-bold)
     (export-block . slimhtml-export-block)
