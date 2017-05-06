@@ -7,6 +7,7 @@
 
 (defun should-render-as (expected-result org-source &optional info)
   (setq expected-result (concat expected-result "\n"))
+  (setq info (plist-put info :html-container nil))
   (should (string= expected-result (org-export-string-as org-source 'slimhtml t info))))
 
 
@@ -27,12 +28,12 @@
                     "* headline\n :PROPERTIES:\n:attr_html: :class this\n:END:\n"))
 
 (ert-deftest slimhtml-inner-template ()
-  :expected-result :failed
-  (should-render-as "<article><p>this</p>\n</article>" "this"
-                    '(:inner-template "<article>:yield:</article>"))
-  (should-render-as "<article><p>this</p>\n</article>" "this"
-                    '(:inner-template (lambda (contents info)
-                                        (format "<article>%s</article>" contents)))))
+  (should (string= "<article></article>"
+                   (org-export-string-as "#+HTML_CONTAINER: article\n" 'slimhtml t)))
+  (should (string= "<article id=\"test\" class=\"something\"></article>"
+                   (org-export-string-as (concat "#+HTML_CONTAINER: article id=\"test\"\n"
+                                                 "#+HTML_CONTAINER: class=\"something\"\n")
+                                         'slimhtml t))))
 
 (ert-deftest slimhtml-italic ()
   (should-render-as "<p><em>this</em></p>" "/this/"))
@@ -118,12 +119,34 @@
                     "#+BEGIN_SRC sh\n  &<>\n#+END_SRC"))
 
 (ert-deftest slimhtml-template ()
-  :expected-result :failed
-  (should-render-as "<article><p>this</p>\n</article>" "this"
-                    '(:inner-template "<article>:yield:</article>"))
-  (should-render-as "<article><p>this</p>\n</article>" "this"
-                    '(:inner-template (lambda (contents info)
-                                        (format "<article>%s</article>" contents)))))
+  (should (org-export-string-as "" 'slimhtml))
+  (let ((expected-result
+         (concat "<!DOCTYPE html>\n"
+                 "<html lang=\"en\">\n"
+                 "<head>\n"
+                 "<meta charset=\"utf-8\">\n"
+                 "<title>template-test</title>\n"
+                 "<link rel=\"stylesheet\" href=\"\" type=\"text/css\">\n"
+                 "</head>\n"
+                 "<body><nav/><article><p><a href=\"/test-directory/test-link\">contents</a></p>\n"
+                 "</article><footer/></body>\n"
+                 "</html>"))
+        (org-source
+         (concat "#+HTML_DOCTYPE: html5\n"
+                 "#+HTML_HEAD: <meta charset=\"utf-8\">\n"
+                 "#+TITLE: template-test\n"
+                 "#+HTML_HEAD_EXTRA: <link rel=\"stylesheet\" href=\"\" type=\"text/css\">\n"
+                 "#+HTML_CONTAINER: article\n"
+                 "#+HTML_PREAMBLE: <nav/>\n"
+                 "#+HTML_POSTAMBLE: <footer/>\n"
+                 "#+OPTIONS: html-link-org-files-as-html:t\n"
+                 "#+OPTIONS: html-link-use-abs-url:t\n"
+                 "#+HTML_EXTENSION: \n"
+                 "#+HTML_LINK_HOME: /test-directory\n\n"
+                 "[[file:./test-link.org][contents]]"
+                 )))
+    (should (string= expected-result
+                     (org-export-string-as org-source 'slimhtml)))))
 
 (ert-deftest slimhtml-verbatim ()
   (should-render-as "<p><kbd>this</kbd></p>" "=this=")

@@ -27,7 +27,11 @@
     (format "<h%d%s>%s</h%d>%s" level (or attributes "") text level (or contents ""))))
 
 (defun slimhtml-inner-template (contents info)
-  contents)
+  (let ((container (plist-get info :html-container)))
+    (if container
+        (format "<%s>%s</%s>" container contents
+                (cl-subseq container 0 (cl-search " " container)))
+      contents)))
 
 (defun slimhtml-italic (italic contents info)
   (when contents
@@ -99,7 +103,26 @@
               (org-element-property :language src-block) code))))
 
 (defun slimhtml-template (contents info)
-  contents)
+  (let ((doctype (assoc (plist-get info :html-doctype) org-html-doctype-alist))
+        (language (plist-get info :language))
+        (head (plist-get info :html-head))
+        (head-extra (plist-get info :html-head-extra))
+        (title (plist-get info :title))
+        (newline "\n"))
+    (concat
+     (when doctype (concat (cdr doctype) newline))
+     "<html" (when language (concat " lang=\"" language "\"")) ">" newline
+     "<head>" newline
+     (when (not (string= "" head)) (concat head newline))
+     (when title (concat "<title>" (if (listp title) (car title) title) "</title>" newline))
+     (when (not (string= "" head-extra)) (concat head-extra newline))
+     "</head>" newline
+     "<body>"
+     (or (plist-get info :html-preamble) "")
+     contents
+     (or (plist-get info :html-postamble) "")
+     "</body>" newline
+     "</html>")))
 
 (defun slimhtml-verbatim (verbatim contents info)
   (let ((contents (org-html-encode-plain-text (org-element-property :value verbatim))))
@@ -140,16 +163,17 @@
     (src-block . slimhtml-src-block)
     (template . slimhtml-template)
     (verbatim . slimhtml-verbatim))
-  :options-alist '((:html-extension "HTML_EXTENSION" nil org-html-extension)
-                   (:html-link-org-as-html nil "html-link-org-files-as-html" org-html-link-org-files-as-html)
-                   (:html-doctype "HTML_DOCTYPE" nil org-html-doctype)
-                   (:html-container "HTML_CONTAINER" nil org-html-container-element)
-                   (:html-link-use-abs-url nil "html-link-use-abs-url" org-html-link-use-abs-url)
-                   (:html-link-home "HTML_LINK_HOME" nil org-html-link-home)
-                   (:html-preamble "HTML_PREAMBLE" nil "" newline)
-                   (:html-postamble "HTML_POSTAMBLE" nil "" newline)
-                   (:html-head "HTML_HEAD" nil org-html-head newline)
-                   (:html-head-extra "HTML_HEAD_EXTRA" nil org-html-head-extra newline)))
+  :options-alist
+  '((:html-extension "HTML_EXTENSION" nil org-html-extension)
+    (:html-link-org-as-html nil "html-link-org-files-as-html" org-html-link-org-files-as-html)
+    (:html-doctype "HTML_DOCTYPE" nil org-html-doctype)
+    (:html-container "HTML_CONTAINER" nil org-html-container-element space)
+    (:html-link-use-abs-url nil "html-link-use-abs-url" org-html-link-use-abs-url)
+    (:html-link-home "HTML_LINK_HOME" nil org-html-link-home)
+    (:html-preamble "HTML_PREAMBLE" nil "" newline)
+    (:html-postamble "HTML_POSTAMBLE" nil "" newline)
+    (:html-head "HTML_HEAD" nil org-html-head newline)
+    (:html-head-extra "HTML_HEAD_EXTRA" nil org-html-head-extra newline)))
 
 
 (provide 'slimhtml)
