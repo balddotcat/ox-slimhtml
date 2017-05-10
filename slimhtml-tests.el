@@ -162,3 +162,22 @@
                     "#+attr_html: :class this\n - item")
   (should-render-as "<style type=\"text/css\">#id{color:#f73;}\n</style>"
                     "#+attr_html: :type text/css\n#+BEGIN_STYLE\n#id{color:#f73;}\n#+END_STYLE"))
+
+(ert-deftest slimhtml-replace-macros ()
+  (should (string= (concat
+                    "<!DOCTYPE html>\n"
+                    "<html lang=\"hu\">\n"
+                    "<head>\nHEAD\n"
+                    "<title>test</title>\n"
+                    "HEAD_EXTRA\n</head>\n"
+                    "<body>PREAMBLE"
+                    "<div>SIGNATURE</div>"
+                    "POSTAMBLE</body>\n</html>")
+                   (org-export-string-as
+                    (concat
+                     "#+MACRO: head HEAD\n#+HTML_HEAD: {{{head}}}\n"
+                     "#+MACRO: head-extra HEAD_EXTRA\n#+HTML_HEAD_EXTRA: {{{head-extra}}}\n"
+                     "#+MACRO: preamble PREAMBLE\n#+HTML_PREAMBLE: {{{preamble}}}\n"
+                     "#+MACRO: postamble POSTAMBLE\n#+HTML_POSTAMBLE: {{{postamble}}}\n"
+                     "#+MACRO: signature SIGNATURE\n#+HTML_SIGNATURE: {{{signature}}}\n")
+                    'slimhtml nil '(:html-doctype "html5" :title "test" :language "hu")))))

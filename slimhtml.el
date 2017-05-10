@@ -79,10 +79,14 @@ CONTENTS is the transcoded contents string.
 INFO is a plist holding export options.
 --
 #+HTML_CONTAINER: this id=\"this\"
-org-html-container-element"
-  (let ((container (plist-get info :html-container)))
+org-html-container-element
+#+HTML_SIGNATURE: this {{{THIS}}}"
+  (let ((container (plist-get info :html-container))
+        (signature (plist-get info :html-signature)))
+    (when (and signature (not (string= "" signature)))
+      (setq signature (slimhtml-replace-macros signature info)))
     (if container
-        (format "<%s>%s</%s>" container contents
+        (format "<%s>%s%s</%s>" container contents (or signature "")
                 (cl-subseq container 0 (cl-search " " container)))
       contents)))
 
@@ -217,6 +221,9 @@ INFO is a plist holding contextual information.
 
 CONTENTS is the transcoded contents string.
 INFO is a plist holding export options.
+
+{{{macro}}} tokens can be set in INFO; :html-head,
+:html-head-extra, :html-preamble and :html-postamble.
 --
 #+HTML_DOCTYPE: | org-html-doctype
 #+HTML_HEAD: | org-html-head
@@ -231,8 +238,8 @@ INFO is a plist holding export options.
 #+HTML_LINK_HOME: | org-html-link-home"
   (let ((doctype (assoc (plist-get info :html-doctype) org-html-doctype-alist))
         (language (plist-get info :language))
-        (head (plist-get info :html-head))
-        (head-extra (plist-get info :html-head-extra))
+        (head (slimhtml-replace-macros (plist-get info :html-head) info))
+        (head-extra (slimhtml-replace-macros (plist-get info :html-head-extra) info))
         (title (plist-get info :title))
         (newline "\n"))
     (concat
@@ -244,9 +251,9 @@ INFO is a plist holding export options.
      (when (not (string= "" head-extra)) (concat head-extra newline))
      "</head>" newline
      "<body>"
-     (or (plist-get info :html-preamble) "")
+     (or (slimhtml-replace-macros (plist-get info :html-preamble) info) "")
      contents
-     (or (plist-get info :html-postamble) "")
+     (or (slimhtml-replace-macros (plist-get info :html-postamble) info) "")
      "</body>" newline
      "</html>")))
 
@@ -277,6 +284,31 @@ INFO is a plist holding contextual information."
                       (org-element-property :contents-begin element)))
     nil t))
 
+(defun slimhtml-replace-macros (contents info)
+  "Return CONTENTS string, with macros replaced.
+
+CONTENTS is a string, optionally with {{{macro}}}
+tokens. INFO is a plist holding export options."
+  (if (cl-search "{{{" contents)
+      (let* ((author (org-element-interpret-data (plist-get info :author)))
+             (date (org-element-interpret-data (plist-get info :date)))
+             (email (or (plist-get info :email) ""))
+             (title (org-element-interpret-data (plist-get info :title)))
+             (export-specific-templates
+              (list (cons "author" author)
+                    (cons "date"
+                          (format "(eval (format-time-string \"$1\" '%S))"
+                                  (org-read-date nil t date nil)))
+                    (cons "email" email)
+                    (cons "title" title)))
+             (templates (org-combine-plists export-specific-templates
+                                            org-macro-templates)))
+        (with-temp-buffer (insert contents)
+                          (org-macro-replace-all templates)
+                          (buffer-string)))
+    contents))
+
+
 ;; backend definition
 (org-export-define-backend 'slimhtml
   '((bold . slimhtml-bold)
@@ -305,7 +337,8 @@ INFO is a plist holding contextual information."
     (:html-preamble "HTML_PREAMBLE" nil "" newline)
     (:html-postamble "HTML_POSTAMBLE" nil "" newline)
     (:html-head "HTML_HEAD" nil org-html-head newline)
-    (:html-head-extra "HTML_HEAD_EXTRA" nil org-html-head-extra newline)))
+    (:html-head-extra "HTML_HEAD_EXTRA" nil org-html-head-extra newline)
+    (:html-signature "HTML_SIGNATURE" nil "" newline)))
 
 
 ;;;###autoload
