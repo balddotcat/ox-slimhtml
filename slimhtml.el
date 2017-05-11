@@ -84,7 +84,7 @@ org-html-container-element
   (let ((container (plist-get info :html-container))
         (signature (plist-get info :html-signature)))
     (when (and signature (not (string= "" signature)))
-      (setq signature (slimhtml-replace-macros signature info)))
+      (setq signature (slimhtml-expand-macros signature info)))
     (if container
         (format "<%s>%s%s</%s>" container contents (or signature "")
                 (cl-subseq container 0 (cl-search " " container)))
@@ -238,8 +238,8 @@ INFO is a plist holding export options.
 #+HTML_LINK_HOME: | org-html-link-home"
   (let ((doctype (assoc (plist-get info :html-doctype) org-html-doctype-alist))
         (language (plist-get info :language))
-        (head (slimhtml-replace-macros (plist-get info :html-head) info))
-        (head-extra (slimhtml-replace-macros (plist-get info :html-head-extra) info))
+        (head (slimhtml-expand-macros (plist-get info :html-head) info))
+        (head-extra (slimhtml-expand-macros (plist-get info :html-head-extra) info))
         (title (plist-get info :title))
         (newline "\n"))
     (concat
@@ -251,9 +251,9 @@ INFO is a plist holding export options.
      (when (not (string= "" head-extra)) (concat head-extra newline))
      "</head>" newline
      "<body>"
-     (or (slimhtml-replace-macros (plist-get info :html-preamble) info) "")
+     (or (slimhtml-expand-macros (plist-get info :html-preamble) info) "")
      contents
-     (or (slimhtml-replace-macros (plist-get info :html-postamble) info) "")
+     (or (slimhtml-expand-macros (plist-get info :html-postamble) info) "")
      "</body>" newline
      "</html>")))
 
@@ -284,8 +284,8 @@ INFO is a plist holding contextual information."
                       (org-element-property :contents-begin element)))
     nil t))
 
-(defun slimhtml-replace-macros (contents info)
-  "Return CONTENTS string, with macros replaced.
+(defun slimhtml-expand-macros (contents info)
+  "Return CONTENTS string, with macros expanded.
 
 CONTENTS is a string, optionally with {{{macro}}}
 tokens. INFO is a plist holding export options."
@@ -297,7 +297,7 @@ tokens. INFO is a plist holding export options."
              (export-specific-templates
               (list (cons "author" author)
                     (cons "date"
-                          (format "(eval (format-time-string \"$1\" '%S))"
+                          (format "(eval (format-time-string \"$1\" '%s))"
                                   (org-read-date nil t date nil)))
                     (cons "email" email)
                     (cons "title" title)))

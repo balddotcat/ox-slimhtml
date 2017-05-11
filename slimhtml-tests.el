@@ -163,7 +163,7 @@
   (should-render-as "<style type=\"text/css\">#id{color:#f73;}\n</style>"
                     "#+attr_html: :type text/css\n#+BEGIN_STYLE\n#id{color:#f73;}\n#+END_STYLE"))
 
-(ert-deftest slimhtml-replace-macros ()
+(ert-deftest slimhtml-expand-macros ()
   (should (string= (concat
                     "<!DOCTYPE html>\n"
                     "<html lang=\"hu\">\n"
