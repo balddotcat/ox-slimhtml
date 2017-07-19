@@ -91,14 +91,14 @@
   (should-render-as "<p>this</p>" "this")
   (should-render-as "<p class=\"this\">paragraph</p>"
                     "#+attr_html: :class this\nparagraph")
-  (should-render-as "<ul><li>list item\nthis\n</li>\n</ul>"
+  (should-render-as "<ul><li>list item\nthis</li>\n</ul>"
                     "- list item\n  this")
   (should-render-as "<style>#this{color:#f73;}\n</style>"
                     "#+BEGIN_STYLE\n#this{color:#f73;}\n#+END_STYLE"))
 
 (ert-deftest slimhtml-plain-list ()
-  (should-render-as "<ul><li>this\n</li>\n</ul>" " - this")
-  (should-render-as "<ul class=\"this\"><li>item\n</li>\n</ul>"
+  (should-render-as "<ul><li>this</li>\n</ul>" " - this")
+  (should-render-as "<ul class=\"this\"><li>item</li>\n</ul>"
                     "#+attr_html: :class this\n - item"))
 
 (ert-deftest slimhtml-plain-text ()
@@ -159,7 +159,7 @@
                     "* headline\n :PROPERTIES:\n:attr_html: :class this\n:END:\n")
   (should-render-as "<p class=\"this\">paragraph</p>"
                     "#+attr_html: :class this\nparagraph")
-  (should-render-as "<ul class=\"this\"><li>item\n</li>\n</ul>"
+  (should-render-as "<ul class=\"this\"><li>item</li>\n</ul>"
                     "#+attr_html: :class this\n - item")
   (should-render-as "<style type=\"text/css\">#id{color:#f73;}\n</style>"
                     "#+attr_html: :type text/css\n#+BEGIN_STYLE\n#id{color:#f73;}\n#+END_STYLE"))
