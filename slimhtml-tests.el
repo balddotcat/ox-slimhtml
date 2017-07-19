@@ -28,18 +28,19 @@
                     "* headline\n :PROPERTIES:\n:attr_html: :class this\n:END:\n"))
 
 (ert-deftest slimhtml-inner-template ()
-  (should (string= "<article></article>"
-                   (org-export-string-as "#+HTML_CONTAINER: article\n" 'slimhtml t)))
-  (should (string= "<article id=\"test\" class=\"something\"></article>"
+  (should (string= "<article><p>content</p>\n</article>"
+                   (org-export-string-as "#+HTML_CONTAINER: article\ncontent" 'slimhtml t)))
+  (should (string= "<article id=\"test\" class=\"something\"><p>content</p>\n</article>"
                    (org-export-string-as (concat "#+HTML_CONTAINER: article id=\"test\"\n"
-                                                 "#+HTML_CONTAINER: class=\"something\"\n")
+                                                 "#+HTML_CONTAINER: class=\"something\"\n"
+                                                 "content")
                                          'slimhtml t))))
 
 (ert-deftest slimhtml-italic ()
   (should-render-as "<p><em>this</em></p>" "/this/"))
 
 (ert-deftest slimhtml-item ()
-  (should-render-as "<ul><li>this\n</li>\n</ul>" "\n - this"))
+  (should-render-as "<ul><li>this</li>\n</ul>" "\n - this"))
 
 (ert-deftest slimhtml-link ()
   "fallback"
@@ -171,7 +172,7 @@
                     "<title>test</title>\n"
                     "HEAD_EXTRA\n</head>\n"
                     "<body>PREAMBLE"
-                    "<div>SIGNATURE</div>"
+                    "<div><p>content</p>\nSIGNATURE</div>"
                     "POSTAMBLE</body>\n</html>")
                    (org-export-string-as
                     (concat
@@ -179,5 +180,6 @@
                      "#+MACRO: head-extra HEAD_EXTRA\n#+HTML_HEAD_EXTRA: {{{head-extra}}}\n"
                      "#+MACRO: preamble PREAMBLE\n#+HTML_PREAMBLE: {{{preamble}}}\n"
                      "#+MACRO: postamble POSTAMBLE\n#+HTML_POSTAMBLE: {{{postamble}}}\n"
-                     "#+MACRO: signature SIGNATURE\n#+HTML_SIGNATURE: {{{signature}}}\n")
+                     "#+MACRO: signature SIGNATURE\n#+HTML_SIGNATURE: {{{signature}}}\n"
+                     "content")
                     'slimhtml nil '(:html-doctype "html5" :title "test" :language "hu")))))
