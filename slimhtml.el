@@ -85,7 +85,7 @@ org-html-container-element
         (signature (plist-get info :html-signature)))
     (when (and signature (not (string= "" signature)))
       (setq signature (slimhtml-expand-macros signature info)))
-    (if container
+    (if (and container (not (string= "" contents)))
         (format "<%s>%s%s</%s>" container contents (or signature "")
                 (cl-subseq container 0 (cl-search " " container)))
       contents)))
@@ -229,7 +229,6 @@ INFO is a plist holding export options.
 #+HTML_HEAD: | org-html-head
 #+TITLE:
 #+HTML_HEAD_EXTRA: | org-html-head-extra
-#+HTML_CONTAINER: | org-html-container-element
 #+HTML_PREAMBLE:
 #+HTML_POSTAMBLE:
 #+OPTIONS: html-link-org-files-as-html:t | org-html-link-org-files-as-html
