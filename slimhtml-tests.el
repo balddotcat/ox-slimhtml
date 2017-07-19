@@ -16,7 +16,7 @@
 
 (ert-deftest slimhtml-export-block ()
   (should-render-as "<img src=\"this.png\"\\>"
-                    "#+BEGIN_HTML\n<img src=\"this.png\"\\>\n#+END_HTML"))
+                    "#+BEGIN_EXPORT html\n<img src=\"this.png\"\\>\n#+END_EXPORT"))
 
 (ert-deftest slimhtml-export-snippet ()
   (should-render-as "<p><img src=\"this.png\"\\></p>"

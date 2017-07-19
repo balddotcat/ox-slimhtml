@@ -40,7 +40,7 @@ INFO is a plist holding contextual information.
 
 CONTENTS is nil. INFO is a plist holding contextual information.
 --
-#+BEGIN_HTMLthis#+END_HTML"
+#+BEGIN_EXPORT html\nthis\n#+END_EXPORT"
   (let ((contents (org-element-property :value export-block)))
     (when contents (org-remove-indentation contents))))
 
