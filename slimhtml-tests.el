@@ -61,7 +61,7 @@
   (should-render-as "<p><a href=\"link\">content</a></p>"
                     "[[file:link.org][content]]" '(:html-link-org-as-html t :html-extension ""))
   "absolute file paths are retained"
-  (should-render-as "<p><a href=\"file:///link.org\">content</a></p>"
+  (should-render-as "<p><a href=\"file:/link.org\">content</a></p>"
                     "[[file:/link.org][content]]")
   "html attributes can be set"
   (should-render-as "<p><a href=\"link\" class=\"this\">content</a></p>"

@@ -142,9 +142,7 @@ http and https links; target=\"_blank\""
                          (setq path (file-name-sans-extension path))))
                      (setq href path)))))
               ((member link-type '("http" "https"))
-               (setq attributes (concat attributes " target=\"_blank\"")))
-              ((string= "fuzzy" link-type)
-               (setq href (org-export-solidify-link-text href))))
+               (setq attributes (concat attributes " target=\"_blank\""))))
         (format "<a href=\"%s\"%s>%s</a>" href attributes contents)))))
 
 (defun slimhtml-paragraph (paragraph contents info)
