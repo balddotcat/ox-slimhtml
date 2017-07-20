@@ -31,8 +31,7 @@
   (should (string= "<article><p>content</p>\n</article>"
                    (org-export-string-as "#+HTML_CONTAINER: article\ncontent" 'slimhtml t)))
   (should (string= "<article id=\"test\" class=\"something\"><p>content</p>\n</article>"
-                   (org-export-string-as (concat "#+HTML_CONTAINER: article id=\"test\"\n"
-                                                 "#+HTML_CONTAINER: class=\"something\"\n"
+                   (org-export-string-as (concat "#+HTML_CONTAINER: article id=\"test\" class=\"something\"\n"
                                                  "content")
                                          'slimhtml t))))
 
@@ -129,8 +128,9 @@
                  "<title>template-test</title>\n"
                  "<link rel=\"stylesheet\" href=\"\" type=\"text/css\">\n"
                  "</head>\n"
-                 "<body><nav/><article><p><a href=\"/test-directory/test-link\">contents</a></p>\n"
-                 "</article><footer/></body>\n"
+                 "<body><article><nav/>"
+                 "<p><a href=\"/test-directory/test-link\">contents</a></p>\n"
+                 "<footer/></article></body>\n"
                  "</html>"))
         (org-source
          (concat "#+HTML_DOCTYPE: html5\n"
@@ -144,8 +144,46 @@
                  "#+OPTIONS: html-link-use-abs-url:t\n"
                  "#+HTML_EXTENSION: \n"
                  "#+HTML_LINK_HOME: /test-directory\n\n"
-                 "[[file:./test-link.org][contents]]"
-                 )))
+                 "[[file:./test-link.org][contents]]")))
+    (should (string= expected-result
+                     (org-export-string-as org-source 'slimhtml))))
+  "header tag"
+  (let ((expected-result
+         (concat "<!DOCTYPE html>\n"
+                 "<html lang=\"en\">\n"
+                 "<head>\n"
+                 "<title>template-test</title>\n"
+                 "</head>\n"
+                 "<body><header><nav/> template-test</header>"
+                 "<p>content</p>\n"
+                 "<footer/></body>\n"
+                 "</html>"))
+        (org-source
+         (concat "#+HTML_DOCTYPE: html5\n"
+                 "#+TITLE: template-test\n"
+                 "#+HTML_HEADER: <header>%n %t</header>\n"
+                 "#+HTML_NAVIGATION: <nav/>\n"
+                 "#+HTML_FOOTER: <footer/>\n"
+                 "#+HTML_CONTAINER: \n"
+                 "content")))
+    (should (string= expected-result
+                     (org-export-string-as org-source 'slimhtml))))
+  "navigation without header tag"
+  (let ((expected-result
+         (concat "<!DOCTYPE html>\n"
+                 "<html lang=\"en\">\n"
+                 "<head>\n"
+                 "<title>template-test</title>\n"
+                 "</head>\n"
+                 "<body><nav/><p>content</p>\n<footer/></body>\n"
+                 "</html>"))
+        (org-source
+         (concat "#+HTML_DOCTYPE: html5\n"
+                 "#+TITLE: template-test\n"
+                 "#+HTML_NAVIGATION: <nav/>\n"
+                 "#+HTML_CONTAINER: \n"
+                 "#+HTML_FOOTER: <footer/>\n"
+                 "content")))
     (should (string= expected-result
                      (org-export-string-as org-source 'slimhtml)))))
 
@@ -171,9 +209,9 @@
                     "<head>\nHEAD\n"
                     "<title>test</title>\n"
                     "HEAD_EXTRA\n</head>\n"
-                    "<body>PREAMBLE"
-                    "<div><p>content</p>\nSIGNATURE</div>"
-                    "POSTAMBLE</body>\n</html>")
+                    "<body>"
+                    "<div>PREAMBLE<p>content</p>\nSIGNATUREPOSTAMBLE</div>"
+                    "</body>\n</html>")
                    (org-export-string-as
                     (concat
                      "#+MACRO: head HEAD\n#+HTML_HEAD: {{{head}}}\n"
