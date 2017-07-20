@@ -239,10 +239,13 @@ INFO is a plist holding export options.
 
 :html-header is a string with two optional tokens,
 as used by format-spec; %n is navigation, %t is title
+
+:html-title is a string with optional tokens,
+as used by format-spec; %t is the document #+TITLE:
 --
 #+HTML_DOCTYPE: | org-html-doctype
 #+HTML_HEAD: | org-html-head
-#+TITLE:
+#+HTML_TITLE: %t
 #+HTML_HEAD_EXTRA: | org-html-head-extra
 #+OPTIONS: html-link-org-files-as-html:t | org-html-link-org-files-as-html
 #+OPTIONS: html-link-use-abs-url:t | org-html-link-use-abs-url
@@ -256,6 +259,7 @@ as used by format-spec; %n is navigation, %t is title
         (head (slimhtml-expand-macros (plist-get info :html-head) info))
         (head-extra (slimhtml-expand-macros (plist-get info :html-head-extra) info))
         (title (plist-get info :title))
+        (title-format (plist-get info :html-title))
         (header (plist-get info :html-header))
         (navigation (slimhtml-expand-macros (plist-get info :html-navigation) info))
         (newline "\n"))
@@ -266,7 +270,11 @@ as used by format-spec; %n is navigation, %t is title
      "<html" (when language (concat " lang=\"" language "\"")) ">" newline
      "<head>" newline
      (when (not (string= "" head)) (concat head newline))
-     (when title (concat "<title>" title "</title>" newline))
+     (when (and title (not (string= "" title)))
+       (if title-format
+           (format-spec (concat "<title>" title-format "</title>\n")
+                        (format-spec-make ?t title))
+         (concat "<title>" title "</title>" newline)))
      (when (not (string= "" head-extra)) (concat head-extra newline))
      "</head>" newline
      "<body>"
@@ -362,6 +370,7 @@ tokens. INFO is a plist holding export options."
     (:html-header "HTML_HEADER" nil "" newline)
     (:html-navigation "HTML_NAVIGATION" nil "" newline)
     (:html-footer "HTML_FOOTER" nil "" newline)
+    (:html-title "HTML_TITLE" nil "%t" t)
     (:html-signature "HTML_SIGNATURE" nil "" newline)))
 
 

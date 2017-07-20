@@ -185,6 +185,21 @@
                  "#+HTML_FOOTER: <footer/>\n"
                  "content")))
     (should (string= expected-result
+                     (org-export-string-as org-source 'slimhtml))))
+  "title tag"
+  (let ((expected-result
+         (concat "<!DOCTYPE html>\n"
+                 "<html lang=\"en\">\n"
+                 "<head>\n"
+                 "<title>template-test - site</title>\n"
+                 "</head>\n"
+                 "<body></body>\n"
+                 "</html>"))
+        (org-source
+         (concat "#+HTML_DOCTYPE: html5\n"
+                 "#+TITLE: template-test\n"
+                 "#+HTML_TITLE: %t - site\n")))
+    (should (string= expected-result
                      (org-export-string-as org-source 'slimhtml)))))
 
 (ert-deftest slimhtml-verbatim ()
