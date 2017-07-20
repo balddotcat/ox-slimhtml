@@ -80,15 +80,26 @@ INFO is a plist holding export options.
 --
 #+HTML_CONTAINER: this id=\"this\"
 org-html-container-element
-#+HTML_SIGNATURE: this {{{THIS}}}"
-  (let ((container (plist-get info :html-container))
-        (signature (plist-get info :html-signature)))
-    (when (and signature (not (string= "" signature)))
-      (setq signature (slimhtml-expand-macros signature info)))
-    (if (and container (not (string= "" contents)))
-        (format "<%s>%s%s</%s>" container contents (or signature "")
-                (cl-subseq container 0 (cl-search " " container)))
-      contents)))
+#+HTML_PREAMBLE:
+#+HTML_SIGNATURE: this {{{THIS}}}
+#+HTML_POSTAMBLE:"
+  (when (and contents (not (string= "" contents)))
+    (let* ((container
+            (plist-get info :html-container))
+           (preamble
+            (or (slimhtml-expand-macros (plist-get info :html-preamble) info) ""))
+           (signature
+            (or (slimhtml-expand-macros (plist-get info :html-signature) info) ""))
+           (postamble
+            (or (slimhtml-expand-macros (plist-get info :html-postamble) info) ""))
+           (template-contents
+            (concat preamble contents signature postamble)))
+      (if (and container (not (string= "" container)))
+          (format "<%s>%s</%s>"
+                  container
+                  template-contents
+                  (cl-subseq container 0 (cl-search " " container)))
+        template-contents))))
 
 (defun slimhtml-italic (italic contents info)
   "Transcode ITALIC from Org to HTML.
@@ -227,8 +238,6 @@ INFO is a plist holding export options.
 #+HTML_HEAD: | org-html-head
 #+TITLE:
 #+HTML_HEAD_EXTRA: | org-html-head-extra
-#+HTML_PREAMBLE:
-#+HTML_POSTAMBLE:
 #+OPTIONS: html-link-org-files-as-html:t | org-html-link-org-files-as-html
 #+OPTIONS: html-link-use-abs-url:t | org-html-link-use-abs-url
 #+HTML_EXTENSION: | org-html-extension
@@ -248,9 +257,8 @@ INFO is a plist holding export options.
      (when (not (string= "" head-extra)) (concat head-extra newline))
      "</head>" newline
      "<body>"
-     (or (slimhtml-expand-macros (plist-get info :html-preamble) info) "")
      contents
-     (or (slimhtml-expand-macros (plist-get info :html-postamble) info) "")
+     (or (slimhtml-expand-macros (plist-get info :html-footer) info) "")
      "</body>" newline
      "</html>")))
 
@@ -328,13 +336,16 @@ tokens. INFO is a plist holding export options."
   '((:html-extension "HTML_EXTENSION" nil org-html-extension)
     (:html-link-org-as-html nil "html-link-org-files-as-html" org-html-link-org-files-as-html)
     (:html-doctype "HTML_DOCTYPE" nil org-html-doctype)
-    (:html-container "HTML_CONTAINER" nil org-html-container-element space)
+    (:html-container "HTML_CONTAINER" nil org-html-container-element)
     (:html-link-use-abs-url nil "html-link-use-abs-url" org-html-link-use-abs-url)
     (:html-link-home "HTML_LINK_HOME" nil org-html-link-home)
     (:html-preamble "HTML_PREAMBLE" nil "" newline)
     (:html-postamble "HTML_POSTAMBLE" nil "" newline)
     (:html-head "HTML_HEAD" nil org-html-head newline)
     (:html-head-extra "HTML_HEAD_EXTRA" nil org-html-head-extra newline)
+    (:html-header "HTML_HEADER" nil "" newline)
+    (:html-navigation "HTML_NAVIGATION" nil "" newline)
+    (:html-footer "HTML_FOOTER" nil "" newline)
     (:html-signature "HTML_SIGNATURE" nil "" newline)))
 
 
