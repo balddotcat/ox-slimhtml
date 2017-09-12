@@ -59,6 +59,7 @@ CONTENTS is nil. INFO is a plist holding contextual information.
 CONTENTS is the section as defined under the HEADLINE.
 INFO is a plist holding contextual information.
 --
+#+OPTIONS: H:this
 * this
  :PROPERTIES:
  :attr_html: :class this
@@ -68,9 +69,14 @@ INFO is a plist holding contextual information.
         (attributes (org-element-property :ATTR_HTML headline)))
     (when attributes
       (setq attributes (format " %s" (org-html--make-attribute-string
-                                      (org-export-read-attribute 'attr_html
-                                       `(nil (attr_html ,(split-string attributes))))))))
-    (format "<h%d%s>%s</h%d>%s" level (or attributes "") text level (or contents ""))))
+                                      (org-export-read-attribute
+                                       'attr_html `(nil (attr_html ,(split-string attributes))))))))
+    (if (not (org-export-low-level-p headline info))
+        (format "<h%d%s>%s</h%d>%s" level (or attributes "") text level (or contents ""))
+      (concat
+       (when (org-export-first-sibling-p headline info) "<ul>")
+       (format "<li>%s%s</li>" text (or contents ""))
+       (when (org-export-last-sibling-p headline info) "</ul>")))))
 
 (defun slimhtml-inner-template (contents info)
   "Return body of document string after HTML conversion.

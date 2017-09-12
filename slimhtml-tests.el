@@ -25,7 +25,9 @@
 (ert-deftest slimhtml-headline ()
   (should-render-as "<h1>this</h1>" "* this\n")
   (should-render-as "<h1 class=\"this\">headline</h1>"
-                    "* headline\n :PROPERTIES:\n:attr_html: :class this\n:END:\n"))
+                    "* headline\n :PROPERTIES:\n:attr_html: :class this\n:END:\n")
+  (should-render-as "<h1>one</h1><h2>two</h2><ul><li>three<ul><li>four</li></ul>\n</li></ul>"
+                    "#+OPTIONS: H:2\n* one\n** two\n*** three\n**** four\n"))
 
 (ert-deftest slimhtml-inner-template ()
   (should (string= "<article><p>content</p>\n</article>"
