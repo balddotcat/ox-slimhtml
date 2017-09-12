@@ -79,24 +79,21 @@ CONTENTS is the transcoded contents string.
 INFO is a plist holding export options.
 
 {{{macro}}} tokens can be set in INFO;
-:html-preamble :html-signature and :html-postamble.
+:html-preamble and :html-postamble.
 --
 #+HTML_CONTAINER: this id=\"this\"
 org-html-container-element
 #+HTML_PREAMBLE: this {{{THIS}}}
-#+HTML_SIGNATURE: this {{{THIS}}}
 #+HTML_POSTAMBLE: this {{{THIS}}}"
   (when (and contents (not (string= "" contents)))
     (let* ((container
             (plist-get info :html-container))
            (preamble
             (or (slimhtml-expand-macros (plist-get info :html-preamble) info) ""))
-           (signature
-            (or (slimhtml-expand-macros (plist-get info :html-signature) info) ""))
            (postamble
             (or (slimhtml-expand-macros (plist-get info :html-postamble) info) ""))
            (template-contents
-            (concat preamble contents signature postamble)))
+            (concat preamble contents postamble)))
       (if (and container (not (string= "" container)))
           (format "<%s>%s</%s>"
                   container
@@ -235,10 +232,7 @@ CONTENTS is the transcoded contents string.
 INFO is a plist holding export options.
 
 {{{macro}}} tokens can be set in INFO; :html-head,
-:html-head-extra and :html-navigation.
-
-:html-header is a string with two optional tokens,
-as used by format-spec; %n is navigation, %t is title
+:html-head-extra and :html-header.
 
 :html-title is a string with optional tokens,
 as used by format-spec; %t is the document #+TITLE:
@@ -251,8 +245,7 @@ as used by format-spec; %t is the document #+TITLE:
 #+OPTIONS: html-link-use-abs-url:t | org-html-link-use-abs-url
 #+HTML_EXTENSION: | org-html-extension
 #+HTML_LINK_HOME: | org-html-link-home
-#+HTML_HEADER: <header>%n %t</header>
-#+HTML_NAVIGATION: this {{{THIS}}}
+#+HTML_HEADER: this {{{THIS}}}
 #+HTML_FOOTER: this {{{THIS}}}"
   (let ((doctype (assoc (plist-get info :html-doctype) org-html-doctype-alist))
         (language (plist-get info :language))
@@ -261,7 +254,6 @@ as used by format-spec; %t is the document #+TITLE:
         (title (plist-get info :title))
         (title-format (plist-get info :html-title))
         (header (plist-get info :html-header))
-        (navigation (slimhtml-expand-macros (plist-get info :html-navigation) info))
         (newline "\n"))
     (when (listp title)
       (setq title (car title)))
@@ -278,9 +270,8 @@ as used by format-spec; %t is the document #+TITLE:
      (when (not (string= "" head-extra)) (concat head-extra newline))
      "</head>" newline
      "<body>"
-     (if (and header (not (string= "" header)))
-         (format-spec header (format-spec-make ?n navigation ?t title))
-       (or navigation ""))
+     (when (and header (not (string= "" header)))
+       (or (slimhtml-expand-macros header info) ""))
      contents
      (or (slimhtml-expand-macros (plist-get info :html-footer) info) "")
      "</body>" newline
@@ -360,7 +351,7 @@ tokens. INFO is a plist holding export options."
   '((:html-extension "HTML_EXTENSION" nil org-html-extension)
     (:html-link-org-as-html nil "html-link-org-files-as-html" org-html-link-org-files-as-html)
     (:html-doctype "HTML_DOCTYPE" nil org-html-doctype)
-    (:html-container "HTML_CONTAINER" nil org-html-container-element)
+    (:html-container "HTML_CONTAINER" nil org-html-container-element t)
     (:html-link-use-abs-url nil "html-link-use-abs-url" org-html-link-use-abs-url)
     (:html-link-home "HTML_LINK_HOME" nil org-html-link-home)
     (:html-preamble "HTML_PREAMBLE" nil "" newline)
@@ -368,10 +359,8 @@ tokens. INFO is a plist holding export options."
     (:html-head "HTML_HEAD" nil org-html-head newline)
     (:html-head-extra "HTML_HEAD_EXTRA" nil org-html-head-extra newline)
     (:html-header "HTML_HEADER" nil "" newline)
-    (:html-navigation "HTML_NAVIGATION" nil "" newline)
     (:html-footer "HTML_FOOTER" nil "" newline)
-    (:html-title "HTML_TITLE" nil "%t" t)
-    (:html-signature "HTML_SIGNATURE" nil "" newline)))
+    (:html-title "HTML_TITLE" nil "%t" t)))
 
 
 ;;;###autoload

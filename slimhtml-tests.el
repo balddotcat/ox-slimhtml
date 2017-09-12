@@ -128,62 +128,25 @@
                  "<title>template-test</title>\n"
                  "<link rel=\"stylesheet\" href=\"\" type=\"text/css\">\n"
                  "</head>\n"
-                 "<body><article><nav/>"
+                 "<body><nav/><article>preamble"
                  "<p><a href=\"/test-directory/test-link\">contents</a></p>\n"
-                 "<footer/></article></body>\n"
+                 "postamble</article><footer/></body>\n"
                  "</html>"))
         (org-source
          (concat "#+HTML_DOCTYPE: html5\n"
                  "#+HTML_HEAD: <meta charset=\"utf-8\">\n"
                  "#+TITLE: template-test\n"
                  "#+HTML_HEAD_EXTRA: <link rel=\"stylesheet\" href=\"\" type=\"text/css\">\n"
+                 "#+HTML_HEADER: <nav/>\n"
                  "#+HTML_CONTAINER: article\n"
-                 "#+HTML_PREAMBLE: <nav/>\n"
-                 "#+HTML_POSTAMBLE: <footer/>\n"
+                 "#+HTML_PREAMBLE: preamble\n"
+                 "#+HTML_POSTAMBLE: postamble\n"
+                 "#+HTML_FOOTER: <footer/>\n"
                  "#+OPTIONS: html-link-org-files-as-html:t\n"
                  "#+OPTIONS: html-link-use-abs-url:t\n"
                  "#+HTML_EXTENSION: \n"
                  "#+HTML_LINK_HOME: /test-directory\n\n"
                  "[[file:./test-link.org][contents]]")))
-    (should (string= expected-result
-                     (org-export-string-as org-source 'slimhtml))))
-  "header tag"
-  (let ((expected-result
-         (concat "<!DOCTYPE html>\n"
-                 "<html lang=\"en\">\n"
-                 "<head>\n"
-                 "<title>template-test</title>\n"
-                 "</head>\n"
-                 "<body><header><nav/> template-test</header>"
-                 "<p>content</p>\n"
-                 "<footer/></body>\n"
-                 "</html>"))
-        (org-source
-         (concat "#+HTML_DOCTYPE: html5\n"
-                 "#+TITLE: template-test\n"
-                 "#+HTML_HEADER: <header>%n %t</header>\n"
-                 "#+HTML_NAVIGATION: <nav/>\n"
-                 "#+HTML_FOOTER: <footer/>\n"
-                 "#+HTML_CONTAINER: \n"
-                 "content")))
-    (should (string= expected-result
-                     (org-export-string-as org-source 'slimhtml))))
-  "navigation without header tag"
-  (let ((expected-result
-         (concat "<!DOCTYPE html>\n"
-                 "<html lang=\"en\">\n"
-                 "<head>\n"
-                 "<title>template-test</title>\n"
-                 "</head>\n"
-                 "<body><nav/><p>content</p>\n<footer/></body>\n"
-                 "</html>"))
-        (org-source
-         (concat "#+HTML_DOCTYPE: html5\n"
-                 "#+TITLE: template-test\n"
-                 "#+HTML_NAVIGATION: <nav/>\n"
-                 "#+HTML_CONTAINER: \n"
-                 "#+HTML_FOOTER: <footer/>\n"
-                 "content")))
     (should (string= expected-result
                      (org-export-string-as org-source 'slimhtml))))
   "title tag"
@@ -225,7 +188,7 @@
                     "<title>test</title>\n"
                     "HEAD_EXTRA\n</head>\n"
                     "<body>"
-                    "<div>PREAMBLE<p>content</p>\nSIGNATUREPOSTAMBLE</div>"
+                    "<div>PREAMBLE<p>content</p>\nPOSTAMBLE</div>"
                     "</body>\n</html>")
                    (org-export-string-as
                     (concat
@@ -233,6 +196,5 @@
                      "#+MACRO: head-extra HEAD_EXTRA\n#+HTML_HEAD_EXTRA: {{{head-extra}}}\n"
                      "#+MACRO: preamble PREAMBLE\n#+HTML_PREAMBLE: {{{preamble}}}\n"
                      "#+MACRO: postamble POSTAMBLE\n#+HTML_POSTAMBLE: {{{postamble}}}\n"
-                     "#+MACRO: signature SIGNATURE\n#+HTML_SIGNATURE: {{{signature}}}\n"
                      "content")
                     'slimhtml nil '(:html-doctype "html5" :title "test" :language "hu")))))
