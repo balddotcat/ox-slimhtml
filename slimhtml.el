@@ -314,7 +314,13 @@ INFO is a plist holding contextual information."
   "Return CONTENTS string, with macros expanded.
 
 CONTENTS is a string, optionally with {{{macro}}}
-tokens. INFO is a plist holding export options."
+tokens. INFO is a plist holding export options.
+
+Since expansion takes place in a separate buffer,
+when using self-evaluating macros such as;
+  #+MACRO: x (eval (fn $1))
+buffer local variables can only be retrieved using
+the shadowed buffer-file-name."
   (if (cl-search "{{{" contents)
       (let* ((author (org-element-interpret-data (plist-get info :author)))
              (date (org-element-interpret-data (plist-get info :date)))
@@ -328,9 +334,11 @@ tokens. INFO is a plist holding export options."
                     (cons "email" email)
                     (cons "title" title)))
              (templates (org-combine-plists export-specific-templates
-                                            org-macro-templates)))
+                                            org-macro-templates))
+             (buffer-name buffer-file-name))
         (with-temp-buffer (insert contents)
-                          (org-macro-replace-all templates)
+                          (let ((buffer-file-name buffer-name))
+                            (org-macro-replace-all templates))
                           (buffer-string)))
     contents))
 
