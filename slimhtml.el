@@ -60,52 +60,49 @@ CONTENTS is the section as defined under the HEADLINE.
 INFO is a plist holding contextual information.
 --
 #+OPTIONS: H:this
+#+HTML_CONTAINER: this | org-html-container-element
 * this
  :PROPERTIES:
  :attr_html: :class this
+ :html_container: this
+ :html_container_class: this
  :END:"
-  (let ((text (org-export-data (org-element-property :title headline) info))
-        (level (org-export-get-relative-level headline info))
-        (attributes (org-element-property :ATTR_HTML headline)))
+  (let* ((text (org-export-data (org-element-property :title headline) info))
+         (level (org-export-get-relative-level headline info))
+         (attributes (org-element-property :ATTR_HTML headline))
+         (container (or (org-element-property :HTML_CONTAINER headline)
+                        (and (= 1 level) (plist-get info :html-container))))
+         (container-class (and container (org-element-property :HTML_CONTAINER_CLASS headline))))
     (when attributes
-      (setq attributes (format " %s" (org-html--make-attribute-string
-                                      (org-export-read-attribute
-                                       'attr_html `(nil (attr_html ,(split-string attributes))))))))
-    (if (not (org-export-low-level-p headline info))
-        (format "<h%d%s>%s</h%d>%s" level (or attributes "") text level (or contents ""))
-      (concat
-       (when (org-export-first-sibling-p headline info) "<ul>")
-       (format "<li>%s%s</li>" text (or contents ""))
-       (when (org-export-last-sibling-p headline info) "</ul>")))))
+      (setq attributes
+            (format " %s" (org-html--make-attribute-string
+                           (org-export-read-attribute 'attr_html `(nil
+                                                                   (attr_html ,(split-string attributes))))))))
+    (concat
+     (when (and container (not (string= "" container)))
+       (format "<%s%s>" container (if container-class (format " class=\"%s\"" container-class) "")))
+     (if (not (org-export-low-level-p headline info))
+         (format "<h%d%s>%s</h%d>%s" level (or attributes "") text level (or contents ""))
+       (concat
+        (when (org-export-first-sibling-p headline info) "<ul>")
+        (format "<li>%s%s</li>" text (or contents ""))
+        (when (org-export-last-sibling-p headline info) "</ul>")))
+     (when (and container (not (string= "" container)))
+       (format "</%s>" (cl-subseq container 0 (cl-search " " container)))))))
 
 (defun slimhtml-inner-template (contents info)
   "Return body of document string after HTML conversion.
 
 CONTENTS is the transcoded contents string.
 INFO is a plist holding export options.
-
-{{{macro}}} tokens can be set in INFO;
-:html-preamble and :html-postamble.
 --
-#+HTML_CONTAINER: this id=\"this\"
-org-html-container-element
 #+HTML_PREAMBLE: this {{{THIS}}}
 #+HTML_POSTAMBLE: this {{{THIS}}}"
   (when (and contents (not (string= "" contents)))
-    (let* ((container
-            (plist-get info :html-container))
-           (preamble
-            (or (slimhtml-expand-macros (plist-get info :html-preamble) info) ""))
-           (postamble
-            (or (slimhtml-expand-macros (plist-get info :html-postamble) info) ""))
-           (template-contents
-            (concat preamble contents postamble)))
-      (if (and container (not (string= "" container)))
-          (format "<%s>%s</%s>"
-                  container
-                  template-contents
-                  (cl-subseq container 0 (cl-search " " container)))
-        template-contents))))
+    (concat
+     (or (slimhtml-expand-macros (plist-get info :html-preamble) info) "")
+     contents
+     (or (slimhtml-expand-macros (plist-get info :html-postamble) info) ""))))
 
 (defun slimhtml-italic (italic contents info)
   "Transcode ITALIC from Org to HTML.
@@ -182,7 +179,10 @@ this"
   "Transcode a SECTION element from Org to HTML.
 
 CONTENTS is the contents of the section.
-INFO is a plist holding contextual information."
+INFO is a plist holding contextual information.
+
+Sections are child elements of org headlines;
+'container' settings are found in slim-headlines."
   contents)
 
 (defun slimhtml-plain-list (plain-list contents info)

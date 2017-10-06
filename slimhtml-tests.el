@@ -29,12 +29,19 @@
   (should-render-as "<h1>one</h1><h2>two</h2><ul><li>three<ul><li>four</li></ul>\n</li></ul>"
                     "#+OPTIONS: H:2\n* one\n** two\n*** three\n**** four\n"))
 
+(ert-deftest slimhtml-container ()
+  (should-render-as "<p>content</p>"
+                    "#+HTML_CONTAINER: div\n#+HTML_CONTAINER: \ncontent")
+  (should-render-as "<section class=\"this\"><h1>headline</h1></section>"
+                    "#+HTML_CONTAINER: section class=\"this\"\n* headline\n")
+  (should-render-as "<section><h1>headline</h1></section>"
+                    "* headline\n:PROPERTIES:\n:html_container: section\n:END:")
+  (should-render-as "<section class=\"this\"><h1>headline</h1></section>"
+                    "* headline\n:PROPERTIES:\n:html_container: section\n:html_container_class: this\n:END:"))
+
 (ert-deftest slimhtml-inner-template ()
-  (should (string= "<article><p>content</p>\n</article>"
-                   (org-export-string-as "#+HTML_CONTAINER: article\ncontent" 'slimhtml t)))
-  (should (string= "<article id=\"test\" class=\"something\"><p>content</p>\n</article>"
-                   (org-export-string-as (concat "#+HTML_CONTAINER: article id=\"test\" class=\"something\"\n"
-                                                 "content")
+  (should (string= "<article id=\"test\"><p>content</p>\n</article>"
+                   (org-export-string-as "#+HTML_PREAMBLE: <article id=\"test\">\n#+HTML_POSTAMBLE: </article>\ncontent"
                                          'slimhtml t))))
 
 (ert-deftest slimhtml-italic ()
@@ -130,9 +137,9 @@
                  "<title>template-test</title>\n"
                  "<link rel=\"stylesheet\" href=\"\" type=\"text/css\">\n"
                  "</head>\n"
-                 "<body><nav/><article>preamble"
+                 "<body><nav/><article>\npreamble"
                  "<p><a href=\"/test-directory/test-link\">contents</a></p>\n"
-                 "postamble</article><footer/></body>\n"
+                 "postamble\n</article><footer/></body>\n"
                  "</html>"))
         (org-source
          (concat "#+HTML_DOCTYPE: html5\n"
@@ -140,9 +147,10 @@
                  "#+TITLE: template-test\n"
                  "#+HTML_HEAD_EXTRA: <link rel=\"stylesheet\" href=\"\" type=\"text/css\">\n"
                  "#+HTML_HEADER: <nav/>\n"
-                 "#+HTML_CONTAINER: article\n"
+                 "#+HTML_PREAMBLE: <article>\n"
                  "#+HTML_PREAMBLE: preamble\n"
                  "#+HTML_POSTAMBLE: postamble\n"
+                 "#+HTML_POSTAMBLE: </article>\n"
                  "#+HTML_FOOTER: <footer/>\n"
                  "#+OPTIONS: html-link-org-files-as-html:t\n"
                  "#+OPTIONS: html-link-use-abs-url:t\n"
@@ -190,7 +198,7 @@
                     "<title>test</title>\n"
                     "HEAD_EXTRA\n</head>\n"
                     "<body>"
-                    "<div>PREAMBLE<p>content</p>\nPOSTAMBLE</div>"
+                    "PREAMBLE<p>content</p>\nPOSTAMBLE"
                     "</body>\n</html>")
                    (org-export-string-as
                     (concat
