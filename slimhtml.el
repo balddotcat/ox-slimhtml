@@ -223,7 +223,7 @@ INFO is a plist holding contextual information.
 CONTENTS is the text of a #+BEGIN_SRC...#+END_SRC block.
 INFO is a plist holding contextual information.
 --
-#+BEGIN_SRCthis#+END_SRC"
+#+BEGIN_SRC language\nthis\n#+END_SRC"
   (let ((code (org-html-format-code src-block info)))
     (when code
       (format "<code class=\"%s\"><pre>%s</pre></code>"
