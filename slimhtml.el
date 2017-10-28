@@ -1,7 +1,7 @@
 ;;; slimhtml --- a minimal HTML org export backend
 ;; Copyright (C) Elo Laszlo 2017
 
-;; Author: Elo Laszlo <laszlo@manifold.io>
+;; Author: Elo Laszlo <hello at bald dot cat>
 ;; Created: August 2016
 ;; Description: a minimal HTML org export backend
 ;; Homepage: http://bald.cat/about/project/slimhtml
