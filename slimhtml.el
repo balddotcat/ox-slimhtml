@@ -122,12 +122,10 @@ INFO is a plist holding contextual information.
 --
 [[this][contents]]
 
-#+OPTIONS: html-link-org-files-as-html:t
-org-html-link-org-files-as-html
-#+HTML_EXTENSION: html
-org-html-extension
-#+HTML_LINK_HOME: /this
-org-html-link-home
+#+OPTIONS: html-link-org-files-as-html:t | org-html-link-org-files-as-html
+#+OPTIONS: html-link-use-abs-url:t | org-html-link-use-abs-url
+#+HTML_EXTENSION: | org-html-extension
+#+HTML_LINK_HOME: | org-html-link-home
 
 #+attr_html: :class this\n[[link][content]]
 http and https links; target=\"_blank\""
@@ -247,10 +245,6 @@ as used by format-spec; %t is the document #+TITLE:
 #+HTML_HEAD: | org-html-head
 #+HTML_TITLE: %t
 #+HTML_HEAD_EXTRA: | org-html-head-extra
-#+OPTIONS: html-link-org-files-as-html:t | org-html-link-org-files-as-html
-#+OPTIONS: html-link-use-abs-url:t | org-html-link-use-abs-url
-#+HTML_EXTENSION: | org-html-extension
-#+HTML_LINK_HOME: | org-html-link-home
 #+HTML_HEADER: this {{{THIS}}}
 #+HTML_FOOTER: this {{{THIS}}}"
   (let ((doctype (assoc (plist-get info :html-doctype) org-html-doctype-alist))
