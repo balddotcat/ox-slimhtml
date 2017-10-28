@@ -4,7 +4,7 @@
 ;; Author: Elo Laszlo <laszlo@manifold.io>
 ;; Created: August 2016
 ;; Description: a minimal HTML org export backend
-;; Homepage: http://manifold.io/project/slimhtml
+;; Homepage: http://bald.cat/about/project/slimhtml
 ;; Version: 0.2.0
 ;;
 ;; This program is free software; you can redistribute it and/or modify
@@ -20,10 +20,19 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+;;; Commentary:
+;; slimhtml is an emacs org mode export backend. It is a set of
+;; transcoders for common org elements which outputs minimal
+;; HTML. The aim is not to re-invent the wheel over the default
+;; org-mode HTML exporter - as it tackles a much bigger, and
+;; different problem - but to provide a small set of components for
+;; easier customization of HTML output from org.
+
 
 ;;; Code:
 (require 'ox-html)
-(require 'cl)
+(eval-when-compile (require 'cl))
+
 
 (defun slimhtml-bold (bold contents info)
   "Transcode BOLD from Org to HTML.
