@@ -157,7 +157,7 @@ http and https links; target=\"_blank\""
                      (when (and home use-abs-url)
                        (when (cl-search "./" path :end1 2 :end2 2) (setq path (cl-subseq path 2)))
                        (setq path (concat (file-name-as-directory home) path)))
-                     (when (and link-org-files-as-html (string= "org" (downcase (file-name-extension path))))
+                     (when (and link-org-files-as-html (file-name-extension path) (string= "org" (downcase (file-name-extension path))))
                        (if (and html-extension (not (string= "" html-extension)))
                            (setq path (concat (file-name-sans-extension path) "." html-extension))
                          (setq path (file-name-sans-extension path))))
