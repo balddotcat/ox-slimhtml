@@ -132,9 +132,6 @@ Sections are child elements of org headlines;
 ;;   ,#+HTML_EXTENSION: [html] || org-html-extension
 
 ;;   ,#+OPTIONS: html-link-use-abs-url:[t/nil] || org-html-link-use-abs-url
-;;   ,#+HTML_LINK_HOME: [/base-url] || org-html-link-home
-
-;;   links of type http and https; target="_blank"
 ;; #+END_EXAMPLE
 
 (defun slimhtml:link (link contents info)
@@ -142,34 +139,29 @@ Sections are child elements of org headlines;
 
 CONTENTS is the text of the link.
 INFO is a plist holding contextual information."
-  (if (slimhtml--immediate-child-of-p link 'link)
-      (org-element-property :raw-link link)
-    (if (not contents)
-        (format "<em>%s</em>" (org-element-property :path link))
+  (if (slimhtml--immediate-child-of-p link 'link) (org-element-property :raw-link link)
+    (if (not contents) (format "<em>%s</em>" (org-element-property :path link))
       (let ((link-type (org-element-property :type link))
             (href (org-element-property :raw-link link))
             (attributes (if (slimhtml--immediate-child-of-p link 'paragraph)
                             (slimhtml--attr (org-export-get-parent link))
-                          "")))
+                          ""))
+            (element "<a href=\"%s\"%s>%s</a>"))
         (cond ((string= "file" link-type)
-               (let ((path (org-element-property :path link)))
-                 (if (file-name-absolute-p path)
-                     (setq href (concat "file:" path))
-                   (let ((html-extension (plist-get info :html-extension))
-                         (home (plist-get info :html-link-home))
-                         (use-abs-url (plist-get info :html-link-use-abs-url))
-                         (link-org-files-as-html (plist-get info :html-link-org-as-html)))
-                     (when (and home use-abs-url)
-                       (when (cl-search "./" path :end1 2 :end2 2) (setq path (cl-subseq path 2)))
-                       (setq path (concat (file-name-as-directory home) path)))
-                     (when (and link-org-files-as-html (file-name-extension path) (string= "org" (downcase (file-name-extension path))))
-                       (if (and html-extension (not (string= "" html-extension)))
-                           (setq path (concat (file-name-sans-extension path) "." html-extension))
-                         (setq path (file-name-sans-extension path))))
-                     (setq href path)))))
-              ((member link-type '("http" "https"))
-               (setq attributes (concat attributes " target=\"_blank\""))))
-        (format "<a href=\"%s\"%s>%s</a>" href attributes contents)))))
+               (let ((html-extension (or (plist-get info :html-extension) ""))
+                     (use-abs-url (plist-get info :html-link-use-abs-url))
+                     (link-org-files-as-html (plist-get info :html-link-org-as-html))
+                     (path (or (org-element-property :path link) "")))
+                 (format element
+                         (concat (if (and use-abs-url (file-name-absolute-p path)) "file:" "")
+                                 (if (and link-org-files-as-html (string= "org" (downcase (or (file-name-extension path) ""))))
+                                     (if (and html-extension (not (string= "" html-extension)))
+                                         (concat (file-name-sans-extension path) "." html-extension)
+                                       (file-name-sans-extension path))
+                                   path))
+                         attributes contents)))
+              (t
+               (format element href attributes contents)))))))
 
 ;; plain lists
 ;; #+BEGIN_EXAMPLE

@@ -61,7 +61,7 @@
 
   "converts file links from .org to :html-extension"
   (should-render-as "<p><a href=\"link.org\">content</a></p>"
-                    "[[link.org][content]]" '(:html-link-org-as-html nil))
+                    "[[file:link.org][content]]" '(:html-link-org-as-html nil))
   (should-render-as "<p><a href=\"link.org\">content</a></p>"
                     "[[file:link.org][content]]" '(:html-link-org-as-html nil))
   (should-render-as "<p><a href=\"link.html\">content</a></p>"
@@ -70,37 +70,20 @@
                     "[[file:link.org][content]]" '(:html-link-org-as-html t :html-extension ""))
 
   "absolute file paths are retained"
-  (should-render-as "<p><a href=\"file:/link.org\">content</a></p>"
-                    "[[file:/link.org][content]]")
+  (should-render-as "<p><a href=\"file:/link.html\">content</a></p>"
+                    "#+OPTIONS: html-link-use-abs-url:t\n[[file:/link.org][content]]")
 
   "html attributes can be set"
   (should-render-as "<p><a href=\"link\" class=\"this\">content</a></p>"
                     "#+attr_html: :class this\n[[link][content]]")
 
-  "http and https links; target=_blank"
-  (should-render-as "<p><a href=\"http://link\" target=\"_blank\">content</a></p>"
-                    "[[http://link][content]]")
-
   "avoid double link creation"
-  (should-render-as "<p><a href=\"http://link\" target=\"_blank\">http://content</a></p>"
+  (should-render-as "<p><a href=\"http://link\">http://content</a></p>"
                     "[[http://link][http://content]]")
 
   "unrecognized link types are rendered as is"
   (should-render-as "<p><a href=\"mailto:user@localhost\">content</a></p>"
-                    "[[mailto:user@localhost][content]]")
-
-  ":html-link-home and :html-link-use-abs-url set"
-  (should-render-as "<p><a href=\"http://localhost/link.html\">content</a></p>"
-                    "[[file:link.org][content]]"
-                    '(:html-link-use-abs-url t :html-link-home "http://localhost/" :html-extension "html"))
-
-  "relative paths"
-  (should-render-as "<p><a href=\"http://localhost/link.org\">content</a></p>"
-                    "[[file:./link.org][content]]"
-                    '(:html-link-use-abs-url t :html-link-home "http://localhost/" :html-link-org-as-html nil))
-  (should-render-as "<p><a href=\"http://localhost/../link.org\">content</a></p>"
-                    "[[file:../link.org][content]]"
-                    '(:html-link-use-abs-url t :html-link-home "http://localhost/" :html-link-org-as-html nil)))
+                    "[[mailto:user@localhost][content]]"))
 
 (ert-deftest slimhtml-paragraph ()
   (should-render-as "<p>this</p>" "this")
@@ -145,7 +128,7 @@
                  "<link rel=\"stylesheet\" href=\"\" type=\"text/css\">\n"
                  "</head>\n"
                  "<body><nav/><article>\npreamble"
-                 "<p><a href=\"/test-directory/test-link\">contents</a></p>\n"
+                 "<p><a href=\"file:/test-link\">contents</a></p>\n"
                  "postamble\n</article><footer/></body>\n"
                  "</html>"))
         (org-source
@@ -163,7 +146,7 @@
                  "#+OPTIONS: html-link-use-abs-url:t\n"
                  "#+HTML_EXTENSION: \n"
                  "#+HTML_LINK_HOME: /test-directory\n\n"
-                 "[[file:./test-link.org][contents]]")))
+                 "[[file:/test-link.org][contents]]")))
     (should (string= expected-result
                      (org-export-string-as org-source 'slimhtml))))
   "title tag"
