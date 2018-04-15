@@ -267,13 +267,11 @@ INFO is a plist holding contextual information."
   "Transcode CODE from Org to HTML.
 
 CONTENTS is the text of a #+BEGIN_SRC...#+END_SRC block.
-INFO is a plist holding contextual information.
---
-#+BEGIN_SRC language\nthis\n#+END_SRC"
-  (let ((code (org-html-format-code src-block info)))
+INFO is a plist holding contextual information."
+  (let ((code (org-html-format-code src-block info))
+        (language (org-element-property :language src-block)))
     (when code
-      (format "<code class=\"%s\"><pre>%s</pre></code>"
-              (org-element-property :language src-block) code))))
+      (format "<code class=\"%s\"><pre>%s</pre></code>" language code))))
 
 ;; body
 ;; #+BEGIN_EXAMPLE
