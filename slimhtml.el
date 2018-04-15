@@ -218,14 +218,29 @@ CONTENTS is nil. INFO is a plist holding contextual information."
 ;;   ,#+BEGIN_EXPORT html                        # <span>export block</span>
 ;;     <span>export block</span>
 ;;   ,#+END_EXPORT
+
+;;   ,#+BEGIN_EXPORT javascript                  # <script>console.log()</script>
+;;     console.log()
+;;   ,#+END_EXPORT
+
+;;   ,#+BEGIN_EXPORT css                         # <style type="text/css">span{}</style>
+;;     span {}
+;;   ,#+END_EXPORT
 ;; #+END_EXAMPLE
 
 (defun slimhtml:export-block (export-block contents info)
   "Transcode an EXPORT-BLOCK element from Org to HTML.
 
 CONTENTS is nil. INFO is a plist holding contextual information."
-  (let ((contents (org-element-property :value export-block)))
-    (when contents (org-remove-indentation contents))))
+  (let ((contents (org-element-property :value export-block))
+        (language (org-element-property :type export-block)))
+    (when contents
+      (cond ((string= "JAVASCRIPT" language)
+             (format "<script>%s</script>" contents))
+            ((string= "CSS" language)
+             (format "<style type=\"text/css\">%s</style>" contents))
+            (t
+             (org-remove-indentation contents))))))
 
 ;; snippet
 ;; #+BEGIN_EXAMPLE
