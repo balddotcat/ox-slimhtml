@@ -3,11 +3,11 @@
 
 (load-file "slimhtml.el")
 
-
-(defun should-render-as (expected-result org-source &optional info)
-  (setq expected-result (concat expected-result "\n"))
-  (setq info (plist-put info :html-container nil))
-  (should (string= expected-result (org-export-string-as org-source 'slimhtml t info))))
+(defun should-render-as (expected-result org-source &optional info skip-newline)
+  (let ((expected-result (if skip-newline expected-result (concat expected-result "\n")))
+        (info (plist-put info :html-container nil)))
+    (should (string= expected-result
+                     (org-export-string-as org-source 'slimhtml t info)))))
 
 (ert-deftest slimhtml-bold ()
   (should-render-as "<p><strong>this</strong></p>" "*this*"))
@@ -30,8 +30,8 @@
 (ert-deftest slimhtml-container ()
   (should-render-as "<p>content</p>"
                     "#+HTML_CONTAINER: div\n#+HTML_CONTAINER: \ncontent")
-  (should-render-as "<section class=\"this\"><h1>headline</h1></section>"
-                    "#+HTML_CONTAINER: section class=\"this\"\n* headline\n")
+  (should-render-as "<section class=\"this\"><h1>headline</h1>\n</section>"
+                    "#+HTML_CONTAINER: section class=\"this\"\n* headline\n" nil 't)
   (should-render-as "<section><h1>headline</h1></section>"
                     "* headline\n:PROPERTIES:\n:html_container: section\n:END:")
   (should-render-as "<section class=\"this\"><h1>headline</h1></section>"
@@ -39,7 +39,9 @@
 
 (ert-deftest slimhtml-inner-template ()
   (should (string= "<article id=\"test\"><p>content</p>\n</article>"
-                   (org-export-string-as "#+HTML_PREAMBLE: <article id=\"test\">\n#+HTML_POSTAMBLE: </article>\ncontent"
+                   (org-export-string-as (concat "#+HTML_CONTAINER: \n"
+                                                 "#+HTML_PREAMBLE: <article id=\"test\">\n"
+                                                 "#+HTML_POSTAMBLE: </article>\ncontent")
                                          'slimhtml t))))
 
 (ert-deftest slimhtml-italic ()
@@ -145,6 +147,7 @@
                  "#+OPTIONS: html-link-org-files-as-html:t\n"
                  "#+OPTIONS: html-link-use-abs-url:t\n"
                  "#+HTML_EXTENSION: \n"
+                 "#+HTML_CONTAINER: \n"
                  "#+HTML_LINK_HOME: /test-directory\n\n"
                  "[[file:/test-link.org][contents]]")))
     (should (string= expected-result
@@ -195,5 +198,6 @@
                      "#+MACRO: head-extra HEAD_EXTRA\n#+HTML_HEAD_EXTRA: {{{head-extra}}}\n"
                      "#+MACRO: preamble PREAMBLE\n#+HTML_PREAMBLE: {{{preamble}}}\n"
                      "#+MACRO: postamble POSTAMBLE\n#+HTML_POSTAMBLE: {{{postamble}}}\n"
+                     "#+HTML_CONTAINER: \n"
                      "content")
                     'slimhtml nil '(:html-doctype "html5" :title "test" :language "hu")))))
