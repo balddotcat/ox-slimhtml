@@ -83,8 +83,7 @@ INFO is a plist holding contextual information."
   (let* ((text (org-export-data (org-element-property :title headline) info))
          (level (org-export-get-relative-level headline info))
          (attributes (org-element-property :ATTR_HTML headline))
-         (container (or (org-element-property :HTML_CONTAINER headline)
-                        (and (= 1 level) (plist-get info :html-container))))
+         (container (org-element-property :HTML_CONTAINER headline))
          (container-class (and container (org-element-property :HTML_CONTAINER_CLASS headline))))
     (when attributes
       (setq attributes
@@ -289,10 +288,14 @@ INFO is a plist holding contextual information.
 CONTENTS is the transcoded contents string.
 INFO is a plist holding export options."
   (when (and contents (not (string= "" contents)))
-    (concat
-     (or (slimhtml--expand-macros (plist-get info :html-preamble) info) "")
-     contents
-     (or (slimhtml--expand-macros (plist-get info :html-postamble) info) ""))))
+    (let ((container (plist-get info :html-container)))
+      (concat
+       (when (and container (not (string= "" container))) (format "<%s>" container))
+       (or (slimhtml--expand-macros (plist-get info :html-preamble) info) "")
+       contents
+       (or (slimhtml--expand-macros (plist-get info :html-postamble) info) "")
+       (when (and container (not (string= "" container)))
+         (format "</%s>" (cl-subseq container 0 (cl-search " " container))))))))
 
 ;; html page
 ;; #+BEGIN_EXAMPLE
