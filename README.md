@@ -9,7 +9,7 @@ different problem - but to provide a small set of components for easier
 customization of `HTML` output from `org`.
 
 -   [github.com/elolaszlo/slimhtml](https://github.com/elolaszlo/slimhtml)
--   [bald.cat/lib/slimhtml](http://bald.cat/lib/slimhtml)
+-   [bald.cat/code/slimhtml](http://bald.cat/code/slimhtml)
 
     (org-export-string-as "org content" 'slimhtml t info)
     (org-export-to-buffer 'slimhtml "*slimhtml*")
@@ -17,7 +17,7 @@ customization of `HTML` output from `org`.
     (org-export-define-derived-backend 'custom-html-exporter
         'slimhtml                             ;; org's default exporter is 'html
       :translate-alist
-      '((bold . slimhtml-bold)                ;; technically, this is already set
+      '((bold . slimhtml:bold)                ;; technically, this is already set
         (special-block . org-html-special-block)))
 
 
@@ -26,19 +26,8 @@ customization of `HTML` output from `org`.
 
 ### formatting
 
-
-#### bold
-
     *bold*                                     # <strong>bold</strong>
-
-
-#### italic
-
     /italic/                                   # <em>italic</em>
-
-
-#### verbatim
-
     =verbatim=                                 # <kbd>verbatim</kbd>
 
 
@@ -64,9 +53,6 @@ customization of `HTML` output from `org`.
     #+HTML_EXTENSION: [html] || org-html-extension
 
     #+OPTIONS: html-link-use-abs-url:[t/nil] || org-html-link-use-abs-url
-    #+HTML_LINK_HOME: [/base-url] || org-html-link-home
-
-    links of type http and https; target="_blank"
 
 
 ### plain lists
@@ -100,6 +86,14 @@ customization of `HTML` output from `org`.
 
     #+BEGIN_EXPORT html                        # <span>export block</span>
       <span>export block</span>
+    #+END_EXPORT
+
+    #+BEGIN_EXPORT javascript                  # <script>console.log()</script>
+      console.log()
+    #+END_EXPORT
+
+    #+BEGIN_EXPORT css                         # <style type="text/css">span{}</style>
+      span {}
     #+END_EXPORT
 
 
