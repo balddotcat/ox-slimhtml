@@ -32,9 +32,11 @@
 (require 'ox-html)
 (eval-when-compile (require 'cl))
 
-;; bold
+;; formatting
 ;; #+BEGIN_EXAMPLE
 ;;   ,*bold*                                     # <strong>bold</strong>
+;;   /italic/                                   # <em>italic</em>
+;;   =verbatim=                                 # <kbd>verbatim</kbd>
 ;; #+END_EXAMPLE
 
 (defun slimhtml:bold (bold contents info)
@@ -44,22 +46,12 @@ CONTENTS is the text with bold markup.
 INFO is a plist holding contextual information."
   (when contents (format "<strong>%s</strong>" contents)))
 
-;; italic
-;; #+BEGIN_EXAMPLE
-;;   /italic/                                   # <em>italic</em>
-;; #+END_EXAMPLE
-
 (defun slimhtml:italic (italic contents info)
   "Transcode ITALIC from Org to HTML.
 
 CONTENTS is the text with italic markup.
 INFO is a plist holding contextual information."
   (when contents (format "<em>%s</em>" contents)))
-
-;; verbatim
-;; #+BEGIN_EXAMPLE
-;;   =verbatim=                                 # <kbd>verbatim</kbd>
-;; #+END_EXAMPLE
 
 (defun slimhtml:verbatim (verbatim contents info)
   "Transcode VERBATIM string from Org to HTML.
