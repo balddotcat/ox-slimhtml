@@ -401,6 +401,10 @@ INFO is a plist holding contextual information."
     nil t))
 
 ;; expand macros
+;; Macro expansion takes place in a separate buffer - as such buffer local variables
+;; are not directly available, which might be important when using self-evaluating
+;; macros such as =,#+MACRO: x (eval (fn $1))=. To help with this, the original
+;; =buffer-file-name= is shadowed.
 
 (defun slimhtml--expand-macros (contents info)
   "Return CONTENTS string, with macros expanded.
@@ -420,9 +424,11 @@ tokens. INFO is a plist holding export options."
                     (cons "email" email)
                     (cons "title" title)))
              (templates (org-combine-plists export-specific-templates
-                                            org-macro-templates)))
+                                            org-macro-templates))
+             (buffer-name buffer-file-name))
         (with-temp-buffer (insert contents)
-                          (org-macro-replace-all templates)
+                          (let ((buffer-file-name buffer-name))
+                            (org-macro-replace-all templates))
                           (buffer-string)))
     contents))
 
