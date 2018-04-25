@@ -286,7 +286,8 @@ INFO is a plist holding contextual information."
   (let ((code (org-html-format-code src-block info))
         (language (org-element-property :language src-block)))
     (when code
-      (format "<code class=\"%s\"><pre>%s</pre></code>" language code))))
+      (format "<code class=\"%s\"%s><pre>%s</pre></code>"
+              language (slimhtml--attr src-block) code))))
 
 ;; body
 ;; #+BEGIN_EXAMPLE
