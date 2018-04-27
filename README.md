@@ -9,7 +9,7 @@ customization of `HTML` output from `org`.
 -   [github.com/balddotcat/slimhtml](https://github.com/balddotcat/slimhtml)
 -   [bald.cat/code/slimhtml](http://bald.cat/code/slimhtml)
 
-
+```
     (org-export-string-as "org content" 'slimhtml t info)
     (org-export-to-buffer 'slimhtml "*slimhtml*")
 
@@ -18,7 +18,7 @@ customization of `HTML` output from `org`.
       :translate-alist
       '((bold . slimhtml:bold)                ;; technically, this is already set
         (special-block . org-html-special-block)))
-
+```
 
 ## org-mode HTML export transcoders
 
