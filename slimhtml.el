@@ -65,11 +65,11 @@ INFO is a plist holding contextual information."
 ;; headlines
 ;; #+BEGIN_EXAMPLE
 ;;   ,* headline text                            # <section class="container">
-;;      :PROPERTIES:                            # <h1 class="headline">headline text</h1>
-;;      :attr_html: :class headline             # </section>
-;;      :html_container: section
-;;      :html_container_class: container
-;;      :END:
+;;     :PROPERTIES:                             # <h1 class="headline">headline text</h1>
+;;     :attr_html: :class headline              # </section>
+;;     :html_container: section
+;;     :html_container_class: container
+;;     :END:
 
 ;;   ,#+OPTIONS: H:[headline level]
 ;;   ,#+HTML_CONTAINER: [default container]

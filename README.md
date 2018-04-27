@@ -1,5 +1,3 @@
-
-
 # slimhtml
 
 **slimhtml** is an **emacs org mode export backend**. It is a set of transcoders for
@@ -8,8 +6,9 @@ wheel over the default **org-mode HTML exporter** - as it tackles a much bigger,
 different problem - but to provide a small set of components for easier
 customization of `HTML` output from `org`.
 
--   [github.com/elolaszlo/slimhtml](https://github.com/elolaszlo/slimhtml)
+-   [github.com/balddotcat/slimhtml](https://github.com/balddotcat/slimhtml)
 -   [bald.cat/code/slimhtml](http://bald.cat/code/slimhtml)
+
 
     (org-export-string-as "org content" 'slimhtml t info)
     (org-export-to-buffer 'slimhtml "*slimhtml*")
@@ -34,11 +33,11 @@ customization of `HTML` output from `org`.
 ### headlines
 
     * headline text                            # <section class="container">
-       :PROPERTIES:                            # <h1 class="headline">headline text</h1>
-       :attr_html: :class headline             # </section>
-       :html_container: section
-       :html_container_class: container
-       :END:
+      :PROPERTIES:                             # <h1 class="headline">headline text</h1>
+      :attr_html: :class headline              # </section>
+      :html_container: section
+      :html_container_class: container
+      :END:
 
     #+OPTIONS: H:[headline level]
     #+HTML_CONTAINER: [default container]
