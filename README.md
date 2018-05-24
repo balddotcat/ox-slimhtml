@@ -7,7 +7,7 @@ different problem - but to provide a small set of components for easier
 customization of `HTML` output from `org`.
 
 -   [github.com/balddotcat/slimhtml](https://github.com/balddotcat/slimhtml)
--   [bald.cat/code/slimhtml](http://bald.cat/code/slimhtml)
+-   [bald.cat/slimhtml](http://bald.cat/slimhtml)
 
 ```
     (org-export-string-as "org content" 'slimhtml t info)

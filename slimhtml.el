@@ -4,7 +4,7 @@
 ;; Author: Elo Laszlo <hello at bald dot cat>
 ;; Created: August 2016
 ;; Description: a minimal HTML org export backend
-;; Homepage: http://bald.cat/code/slimhtml
+;; Homepage: http://bald.cat/slimhtml
 ;; Version: 0.4.0
 ;;
 ;; This program is free software; you can redistribute it and/or modify
