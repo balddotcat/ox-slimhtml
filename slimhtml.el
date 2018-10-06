@@ -317,13 +317,13 @@ INFO is a plist holding export options."
 ;;   ,#+HTML_HEAD: || org-html-head              # <html lang="en">  ; when language is set
 ;;   ,#+HTML_TITLE: %t                           #   <head>
 ;;   ,#+HTML_HEAD_EXTRA: || org-html-head-extra  #     head
-;;   ,#+HTML_HEADER: {{{macro}}}                 #     <title>document title</title>
-;;   ,#+HTML_FOOTER: {{{macro}}}                 #     head-extra
-;;                                              #   </head>
-;;                                              #   <body>
-;;                                              #     preamble
+;;   ,#+HTML_BODY_ATTR: id="test"                #     <title>document title</title>
+;;   ,#+HTML_HEADER: {{{macro}}}                 #     head-extra
+;;   ,#+HTML_FOOTER: {{{macro}}}                 #   </head>
+;;                                              #   <body id="test">
+;;                                              #     header
 ;;                                              #     content
-;;                                              #     postamble
+;;                                              #     footer
 ;;                                              #   </body>
 ;;                                              # </html>
 
@@ -345,6 +345,7 @@ INFO is a plist holding export options."
         (head-extra (slimhtml--expand-macros (plist-get info :html-head-extra) info))
         (title (plist-get info :title))
         (title-format (plist-get info :html-title))
+        (body-attr (plist-get info :html-body-attr))
         (header (plist-get info :html-header))
         (newline "\n"))
     (when (listp title)
@@ -361,7 +362,7 @@ INFO is a plist holding export options."
          (concat "<title>" title "</title>" newline)))
      (when (not (string= "" head-extra)) (concat head-extra newline))
      "</head>" newline
-     "<body>"
+     "<body" (and body-attr (not (string= "" body-attr)) (format " %s" body-attr)) ">"
      (when (and header (not (string= "" header)))
        (or (slimhtml--expand-macros header info) ""))
      contents
@@ -491,7 +492,8 @@ Return output file name."
     (:html-head-extra "HTML_HEAD_EXTRA" nil org-html-head-extra newline)
     (:html-header "HTML_HEADER" nil "" newline)
     (:html-footer "HTML_FOOTER" nil "" newline)
-    (:html-title "HTML_TITLE" nil "%t" t)))
+    (:html-title "HTML_TITLE" nil "%t" t)
+    (:html-body-attr "HTML_BODY_ATTR" nil "" t)))
 
 (provide 'slimhtml)
 ;;; slimhtml.el ends here

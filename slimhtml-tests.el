@@ -129,7 +129,7 @@
                  "<title>template-test</title>\n"
                  "<link rel=\"stylesheet\" href=\"\" type=\"text/css\">\n"
                  "</head>\n"
-                 "<body><nav/><article>\npreamble"
+                 "<body id=\"test\"><nav/><article>\npreamble"
                  "<p><a href=\"file:/test-link\">contents</a></p>\n"
                  "postamble\n</article><footer/></body>\n"
                  "</html>"))
@@ -139,6 +139,7 @@
                  "#+TITLE: template-test\n"
                  "#+HTML_HEAD_EXTRA: <link rel=\"stylesheet\" href=\"\" type=\"text/css\">\n"
                  "#+HTML_HEADER: <nav/>\n"
+                 "#+HTML_BODY_ATTR: id=\"test\"\n"
                  "#+HTML_PREAMBLE: <article>\n"
                  "#+HTML_PREAMBLE: preamble\n"
                  "#+HTML_POSTAMBLE: postamble\n"
