@@ -16,7 +16,7 @@ customization of `HTML` output from `org`.
     (org-export-define-derived-backend 'custom-html-exporter
         'slimhtml                             ;; org's default exporter is 'html
       :translate-alist
-      '((bold . slimhtml:bold)                ;; technically, this is already set
+      '((bold . slimhtml-bold)                ;; technically, this is already set
         (special-block . org-html-special-block)))
 ```
 
@@ -132,13 +132,13 @@ customization of `HTML` output from `org`.
     #+HTML_HEAD: || org-html-head              # <html lang="en">  ; when language is set
     #+HTML_TITLE: %t                           #   <head>
     #+HTML_HEAD_EXTRA: || org-html-head-extra  #     head
-    #+HTML_HEADER: {{{macro}}}                 #     <title>document title</title>
-    #+HTML_FOOTER: {{{macro}}}                 #     head-extra
-                                               #   </head>
-                                               #   <body>
-                                               #     preamble
+    #+HTML_BODY_ATTR: id="test"                #     <title>document title</title>
+    #+HTML_HEADER: {{{macro}}}                 #     head-extra
+    #+HTML_FOOTER: {{{macro}}}                 #   </head>
+                                               #   <body id="test">
+                                               #     header
                                                #     content
-                                               #     postamble
+                                               #     footer
                                                #   </body>
                                                # </html>
 
