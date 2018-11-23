@@ -9,25 +9,25 @@
     (should (string= expected-result
                      (org-export-string-as org-source 'slimhtml t info)))))
 
-(ert-deftest slimhtml-bold ()
+(ert-deftest ox-slimhtml-bold ()
   (should-render-as "<p><strong>this</strong></p>" "*this*"))
 
-(ert-deftest slimhtml-export-block ()
+(ert-deftest ox-slimhtml-export-block ()
   (should-render-as "<img src=\"this.png\"\\>"
                     "#+BEGIN_EXPORT html\n<img src=\"this.png\"\\>\n#+END_EXPORT"))
 
-(ert-deftest slimhtml-export-snippet ()
+(ert-deftest ox-slimhtml-export-snippet ()
   (should-render-as "<p><img src=\"this.png\"\\></p>"
                     "@@html:<img src=\"this.png\"\\>@@"))
 
-(ert-deftest slimhtml-headline ()
+(ert-deftest ox-slimhtml-headline ()
   (should-render-as "<h1>this</h1>" "* this\n")
   (should-render-as "<h1 class=\"this\">headline</h1>"
                     "* headline\n :PROPERTIES:\n:attr_html: :class this\n:END:\n")
   (should-render-as "<h1>one</h1><h2>two</h2><ul><li>three<ul><li>four</li></ul>\n</li></ul>"
                     "#+OPTIONS: H:2\n* one\n** two\n*** three\n**** four\n"))
 
-(ert-deftest slimhtml-container ()
+(ert-deftest ox-slimhtml-container ()
   (should-render-as "<p>content</p>"
                     "#+HTML_CONTAINER: div\n#+HTML_CONTAINER: \ncontent")
   (should-render-as "<section class=\"this\"><h1>headline</h1>\n</section>"
@@ -37,20 +37,20 @@
   (should-render-as "<section class=\"this\"><h1>headline</h1></section>"
                     "* headline\n:PROPERTIES:\n:html_container: section\n:html_container_class: this\n:END:"))
 
-(ert-deftest slimhtml-inner-template ()
+(ert-deftest ox-slimhtml-inner-template ()
   (should (string= "<article id=\"test\"><p>content</p>\n</article>"
                    (org-export-string-as (concat "#+HTML_CONTAINER: \n"
                                                  "#+HTML_PREAMBLE: <article id=\"test\">\n"
                                                  "#+HTML_POSTAMBLE: </article>\ncontent")
                                          'slimhtml t))))
 
-(ert-deftest slimhtml-italic ()
+(ert-deftest ox-slimhtml-italic ()
   (should-render-as "<p><em>this</em></p>" "/this/"))
 
-(ert-deftest slimhtml-item ()
+(ert-deftest ox-slimhtml-item ()
   (should-render-as "<ul><li>this</li>\n</ul>" "\n - this"))
 
-(ert-deftest slimhtml-link ()
+(ert-deftest ox-slimhtml-link ()
   "fallback"
   (should-render-as "<p><em>link</em></p>"
                     "[[link]]")
@@ -87,7 +87,7 @@
   (should-render-as "<p><a href=\"mailto:user@localhost\">content</a></p>"
                     "[[mailto:user@localhost][content]]"))
 
-(ert-deftest slimhtml-paragraph ()
+(ert-deftest ox-slimhtml-paragraph ()
   (should-render-as "<p>this</p>" "this")
   (should-render-as "<p class=\"this\">paragraph</p>"
                     "#+attr_html: :class this\nparagraph")
@@ -96,30 +96,30 @@
   (should-render-as "<style>#this{color:#f73;}\n</style>"
                     "#+BEGIN_STYLE\n#this{color:#f73;}\n#+END_STYLE"))
 
-(ert-deftest slimhtml-plain-list ()
+(ert-deftest ox-slimhtml-plain-list ()
   (should-render-as "<ul><li>this</li>\n</ul>" " - this")
   (should-render-as "<ul class=\"this\"><li>item</li>\n</ul>"
                     "#+attr_html: :class this\n - item"))
 
-(ert-deftest slimhtml-plain-text ()
+(ert-deftest ox-slimhtml-plain-text ()
   (should-render-as "<p>&amp;&lt;&gt;</p>" "&<>"))
 
-(ert-deftest slimhtml-section ()
+(ert-deftest ox-slimhtml-section ()
   (should-render-as "<p>this</p>" "this"))
 
-(ert-deftest slimhtml-special-block ()
+(ert-deftest ox-slimhtml-special-block ()
   (should-render-as "<style>#this{color:#f73;}\n</style>"
                     "#+BEGIN_STYLE\n#this{color:#f73;}\n#+END_STYLE")
   (should-render-as "<style type=\"text/css\">#id{color:#f73;}\n</style>"
                     "#+attr_html: :type text/css\n#+BEGIN_STYLE\n#id{color:#f73;}\n#+END_STYLE"))
 
-(ert-deftest slimhtml-src-block ()
+(ert-deftest ox-slimhtml-src-block ()
   (should-render-as "<code class=\"lisp\"><pre>(message 'this)\n</pre></code>"
                     "#+BEGIN_SRC lisp\n  (message 'this)\n#+END_SRC")
   (should-render-as "<code class=\"sh\"><pre>&amp;&lt;&gt;\n</pre></code>"
                     "#+BEGIN_SRC sh\n  &<>\n#+END_SRC"))
 
-(ert-deftest slimhtml-template ()
+(ert-deftest ox-slimhtml-template ()
   (should (org-export-string-as "" 'slimhtml))
   (let ((expected-result
          (concat "<!DOCTYPE html>\n"
@@ -169,11 +169,11 @@
     (should (string= expected-result
                      (org-export-string-as org-source 'slimhtml)))))
 
-(ert-deftest slimhtml-verbatim ()
+(ert-deftest ox-slimhtml-verbatim ()
   (should-render-as "<p><kbd>this</kbd></p>" "=this=")
   (should-render-as "<p><kbd>&amp;&lt;&gt;</kbd></p>" "=&<>="))
 
-(ert-deftest slimhtml--attr ()
+(ert-deftest ox-slimhtml--attr ()
   (should-render-as "<h1 class=\"this\">headline</h1>"
                     "* headline\n :PROPERTIES:\n:attr_html: :class this\n:END:\n")
   (should-render-as "<p class=\"this\">paragraph</p>"
@@ -183,7 +183,7 @@
   (should-render-as "<style type=\"text/css\">#id{color:#f73;}\n</style>"
                     "#+attr_html: :type text/css\n#+BEGIN_STYLE\n#id{color:#f73;}\n#+END_STYLE"))
 
-(ert-deftest slimhtml-expand-macros ()
+(ert-deftest ox-slimhtml-expand-macros ()
   (should (string= (concat
                     "<!DOCTYPE html>\n"
                     "<html lang=\"hu\">\n"

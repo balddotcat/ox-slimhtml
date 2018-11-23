@@ -43,21 +43,21 @@
 ;;   =verbatim=                                 # <kbd>verbatim</kbd>
 ;; #+END_EXAMPLE
 
-(defun slimhtml-bold (bold contents info)
+(defun ox-slimhtml-bold (bold contents info)
   "Transcode BOLD from Org to HTML.
 
 CONTENTS is the text with bold markup.
 INFO is a plist holding contextual information."
   (when contents (format "<strong>%s</strong>" contents)))
 
-(defun slimhtml-italic (italic contents info)
+(defun ox-slimhtml-italic (italic contents info)
   "Transcode ITALIC from Org to HTML.
 
 CONTENTS is the text with italic markup.
 INFO is a plist holding contextual information."
   (when contents (format "<em>%s</em>" contents)))
 
-(defun slimhtml-verbatim (verbatim contents info)
+(defun ox-slimhtml-verbatim (verbatim contents info)
   "Transcode VERBATIM string from Org to HTML.
 
 CONTENTS is nil.
@@ -79,7 +79,7 @@ INFO is a plist holding contextual information."
 ;;   ,#+HTML_CONTAINER: [default container]
 ;; #+END_EXAMPLE
 
-(defun slimhtml-headline (headline contents info)
+(defun ox-slimhtml-headline (headline contents info)
   "Transcode HEADLINE from Org to HTML.
 
 CONTENTS is the section as defined under the HEADLINE.
@@ -108,7 +108,7 @@ INFO is a plist holding contextual information."
 
 ;; sections
 
-(defun slimhtml-section (section contents info)
+(defun ox-slimhtml-section (section contents info)
   "Transcode a SECTION element from Org to HTML.
 
 CONTENTS is the contents of the section.
@@ -129,17 +129,17 @@ Sections are child elements of org headlines;
 ;;   ,#+OPTIONS: html-link-use-abs-url:[t/nil] || org-html-link-use-abs-url
 ;; #+END_EXAMPLE
 
-(defun slimhtml-link (link contents info)
+(defun ox-slimhtml-link (link contents info)
   "Transcode LINK from Org to HTML.
 
 CONTENTS is the text of the link.
 INFO is a plist holding contextual information."
-  (if (slimhtml--immediate-child-of-p link 'link) (org-element-property :raw-link link)
+  (if (ox-slimhtml--immediate-child-of-p link 'link) (org-element-property :raw-link link)
     (if (not contents) (format "<em>%s</em>" (org-element-property :path link))
       (let ((link-type (org-element-property :type link))
             (href (org-element-property :raw-link link))
-            (attributes (if (slimhtml--immediate-child-of-p link 'paragraph)
-                            (slimhtml--attr (org-export-get-parent link))
+            (attributes (if (ox-slimhtml--immediate-child-of-p link 'paragraph)
+                            (ox-slimhtml--attr (org-export-get-parent link))
                           ""))
             (element "<a href=\"%s\"%s>%s</a>"))
         (cond ((string= "file" link-type)
@@ -169,7 +169,7 @@ INFO is a plist holding contextual information."
 ;;   - definition :: list                       # <dl><dt>definition</dt><dd>list</dd></dl>
 ;; #+END_EXAMPLE
 
-(defun slimhtml-plain-list (plain-list contents info)
+(defun ox-slimhtml-plain-list (plain-list contents info)
   "Transcode a PLAIN-LIST string from Org to HTML.
 
 CONTENTS is the contents of the list element.
@@ -179,7 +179,7 @@ INFO is a plist holding contextual information."
                   (ordered "ol")
                   (unordered "ul")
                   (descriptive "dl"))))
-      (format "<%s%s>%s</%s>" type (slimhtml--attr plain-list) contents type))))
+      (format "<%s%s>%s</%s>" type (ox-slimhtml--attr plain-list) contents type))))
 
 ;; paragraphs
 ;; #+BEGIN_EXAMPLE
@@ -187,18 +187,18 @@ INFO is a plist holding contextual information."
 ;;   content
 ;; #+END_EXAMPLE
 
-(defun slimhtml-paragraph (paragraph contents info)
+(defun ox-slimhtml-paragraph (paragraph contents info)
   "Transcode a PARAGRAPH element from Org to HTML.
 
 CONTENTS is the contents of the paragraph.
 INFO is a plist holding contextual information."
   (when contents
-    (if (or (slimhtml--immediate-child-of-p paragraph 'item)
-            (slimhtml--immediate-child-of-p paragraph 'special-block))
+    (if (or (ox-slimhtml--immediate-child-of-p paragraph 'item)
+            (ox-slimhtml--immediate-child-of-p paragraph 'special-block))
         contents
-      (if (slimhtml--has-immediate-child-of-p paragraph 'link)
+      (if (ox-slimhtml--has-immediate-child-of-p paragraph 'link)
           (format "<p>%s</p>" contents)
-        (format "<p%s>%s</p>" (slimhtml--attr paragraph) contents)))))
+        (format "<p%s>%s</p>" (ox-slimhtml--attr paragraph) contents)))))
 
 ;; examples
 ;; #+BEGIN_EXAMPLE
@@ -207,7 +207,7 @@ INFO is a plist holding contextual information."
 ;;   ,#+END_EXAMPLE
 ;; #+END_EXAMPLE
 
-(defun slimhtml-example-block (example-block contents info)
+(defun ox-slimhtml-example-block (example-block contents info)
   "Transcode an EXAMPLE-BLOCK element from Org to HTML.
 
 CONTENTS is nil.  INFO is a plist holding contextual information."
@@ -232,7 +232,7 @@ CONTENTS is nil.  INFO is a plist holding contextual information."
 ;;   ,#+END_EXPORT
 ;; #+END_EXAMPLE
 
-(defun slimhtml-export-block (export-block contents info)
+(defun ox-slimhtml-export-block (export-block contents info)
   "Transcode an EXPORT-BLOCK element from Org to HTML.
 
 CONTENTS is nil.  INFO is a plist holding contextual information."
@@ -251,7 +251,7 @@ CONTENTS is nil.  INFO is a plist holding contextual information."
 ;;   @@html:<span>snippet</span>@@              # <span>snippet</span>
 ;; #+END_EXAMPLE
 
-(defun slimhtml-export-snippet (export-snippet contents info)
+(defun ox-slimhtml-export-snippet (export-snippet contents info)
   "Transcode a EXPORT-SNIPPET object from Org to HTML.
 
 CONTENTS is nil.  INFO is a plist holding contextual information."
@@ -266,14 +266,14 @@ CONTENTS is nil.  INFO is a plist holding contextual information."
 ;;   ,#+END_STYLE
 ;; #+END_EXAMPLE
 
-(defun slimhtml-special-block (special-block contents info)
+(defun ox-slimhtml-special-block (special-block contents info)
   "Transcode SPECIAL-BLOCK from Org to HTML.
 
 CONTENTS is the text within the #+BEGIN_ and #+END_ markers.
 INFO is a plist holding contextual information."
   (when contents
     (let ((block-type (downcase (org-element-property :type special-block))))
-      (format "<%s%s>%s</%s>" block-type (slimhtml--attr special-block) contents block-type))))
+      (format "<%s%s>%s</%s>" block-type (ox-slimhtml--attr special-block) contents block-type))))
 
 ;; source code
 ;; #+BEGIN_EXAMPLE
@@ -282,7 +282,7 @@ INFO is a plist holding contextual information."
 ;;   ,#+END_SRC                                  # </code>
 ;; #+END_EXAMPLE
 
-(defun slimhtml-src-block (src-block contents info)
+(defun ox-slimhtml-src-block (src-block contents info)
   "Transcode SRC-BLOCK from Org to HTML.
 
 CONTENTS is the text of a #+BEGIN_SRC...#+END_SRC block.
@@ -291,7 +291,7 @@ INFO is a plist holding contextual information."
         (language (org-element-property :language src-block)))
     (when code
       (format "<code class=\"%s\"%s><pre>%s</pre></code>"
-              language (slimhtml--attr src-block) code))))
+              language (ox-slimhtml--attr src-block) code))))
 
 ;; body
 ;; #+BEGIN_EXAMPLE
@@ -300,7 +300,7 @@ INFO is a plist holding contextual information."
 ;;   ,#+HTML_POSTAMBLE: postamble {{{macro}}}    # postamble
 ;; #+END_EXAMPLE
 
-(defun slimhtml-inner-template (contents info)
+(defun ox-slimhtml-inner-template (contents info)
   "Return body of document string after HTML conversion.
 
 CONTENTS is the transcoded contents string.
@@ -309,9 +309,9 @@ INFO is a plist holding export options."
     (let ((container (plist-get info :html-container)))
       (concat
        (when (and container (not (string= "" container))) (format "<%s>" container))
-       (or (slimhtml--expand-macros (plist-get info :html-preamble) info) "")
+       (or (ox-slimhtml--expand-macros (plist-get info :html-preamble) info) "")
        contents
-       (or (slimhtml--expand-macros (plist-get info :html-postamble) info) "")
+       (or (ox-slimhtml--expand-macros (plist-get info :html-postamble) info) "")
        (when (and container (not (string= "" container)))
          (format "</%s>" (cl-subseq container 0 (cl-search " " container))))))))
 
@@ -338,15 +338,15 @@ INFO is a plist holding export options."
 ;;   %t is the document's #+TITLE: property.
 ;; #+END_EXAMPLE
 
-(defun slimhtml-template (contents info)
+(defun ox-slimhtml-template (contents info)
   "Return full document string after HTML conversion.
 
 CONTENTS is the transcoded contents string.
 INFO is a plist holding export options."
   (let ((doctype (assoc (plist-get info :html-doctype) org-html-doctype-alist))
         (language (plist-get info :language))
-        (head (slimhtml--expand-macros (plist-get info :html-head) info))
-        (head-extra (slimhtml--expand-macros (plist-get info :html-head-extra) info))
+        (head (ox-slimhtml--expand-macros (plist-get info :html-head) info))
+        (head-extra (ox-slimhtml--expand-macros (plist-get info :html-head-extra) info))
         (title (plist-get info :title))
         (title-format (plist-get info :html-title))
         (body-attr (plist-get info :html-body-attr))
@@ -368,15 +368,15 @@ INFO is a plist holding export options."
      "</head>" newline
      "<body" (and body-attr (not (string= "" body-attr)) (format " %s" body-attr)) ">"
      (when (and header (not (string= "" header)))
-       (or (slimhtml--expand-macros header info) ""))
+       (or (ox-slimhtml--expand-macros header info) ""))
      contents
-     (or (slimhtml--expand-macros (plist-get info :html-footer) info) "")
+     (or (ox-slimhtml--expand-macros (plist-get info :html-footer) info) "")
      "</body>" newline
      "</html>")))
 
 ;; plain text
 
-(defun slimhtml-plain-text (plain-text info)
+(defun ox-slimhtml-plain-text (plain-text info)
   "Transcode a PLAIN-TEXT string from Org to HTML.
 
 PLAIN-TEXT is the string to transcode.
@@ -385,7 +385,7 @@ INFO is a plist holding contextual information."
 
 ;; attributes
 
-(defun slimhtml--attr (element &optional property)
+(defun ox-slimhtml--attr (element &optional property)
   "Return ELEMENT's html attribute properties as a string.
 
 When optional argument PROPERTY is non-nil, return the value of
@@ -395,7 +395,7 @@ that property within attributes."
 
 ;; is an immediate child of [element]?
 
-(defun slimhtml--immediate-child-of-p (element container-type)
+(defun ox-slimhtml--immediate-child-of-p (element container-type)
   "Is ELEMENT an immediate child of an org CONTAINER-TYPE element?"
   (let ((container (org-export-get-parent element)))
     (and (eq (org-element-type container) container-type)
@@ -404,7 +404,7 @@ that property within attributes."
 
 ;; has an immediate child of [element-type]?
 
-(defun slimhtml--has-immediate-child-of-p (element element-type)
+(defun ox-slimhtml--has-immediate-child-of-p (element element-type)
   "Does ELEMENT have an immediate ELEMENT-TYPE child?"
   (org-element-map element element-type
     (lambda (link) (= (org-element-property :begin link)
@@ -417,7 +417,7 @@ that property within attributes."
 ;; macros such as =,#+MACRO: x (eval (fn $1))=. To help with this, the original
 ;; =buffer-file-name= is shadowed.
 
-(defun slimhtml--expand-macros (contents info)
+(defun ox-slimhtml--expand-macros (contents info)
   "Return CONTENTS string, with macros expanded.
 
 CONTENTS is a string, optionally with {{{macro}}}
@@ -449,11 +449,11 @@ tokens.  INFO is a plist holding export options."
 ;;         '(("project-name"
 ;;            :base-directory "~/src"
 ;;            :publishing-directory "~/public"
-;;            :publishing-function slimhtml-publish-to-html)))
+;;            :publishing-function ox-slimhtml-publish-to-html)))
 ;; #+END_EXAMPLE
 
 ;;;###autoload
-(defun slimhtml-publish-to-html (plist filename pub-dir)
+(defun ox-slimhtml-publish-to-html (plist filename pub-dir)
   "Publish an org file to html.
 
 PLIST is the property list for the given project.  FILENAME
@@ -471,23 +471,23 @@ Return output file name."
 
 ;; org-export backend definition
 (org-export-define-backend 'slimhtml
-  '((bold . slimhtml-bold)
-    (example-block . slimhtml-example-block)
-    (export-block . slimhtml-export-block)
-    (export-snippet . slimhtml-export-snippet)
-    (headline . slimhtml-headline)
-    (inner-template . slimhtml-inner-template)
-    (italic . slimhtml-italic)
+  '((bold . ox-slimhtml-bold)
+    (example-block . ox-slimhtml-example-block)
+    (export-block . ox-slimhtml-export-block)
+    (export-snippet . ox-slimhtml-export-snippet)
+    (headline . ox-slimhtml-headline)
+    (inner-template . ox-slimhtml-inner-template)
+    (italic . ox-slimhtml-italic)
     (item . org-html-item)
-    (link . slimhtml-link)
-    (paragraph . slimhtml-paragraph)
-    (plain-list . slimhtml-plain-list)
-    (plain-text . slimhtml-plain-text)
-    (section . slimhtml-section)
-    (special-block . slimhtml-special-block)
-    (src-block . slimhtml-src-block)
-    (template . slimhtml-template)
-    (verbatim . slimhtml-verbatim))
+    (link . ox-slimhtml-link)
+    (paragraph . ox-slimhtml-paragraph)
+    (plain-list . ox-slimhtml-plain-list)
+    (plain-text . ox-slimhtml-plain-text)
+    (section . ox-slimhtml-section)
+    (special-block . ox-slimhtml-special-block)
+    (src-block . ox-slimhtml-src-block)
+    (template . ox-slimhtml-template)
+    (verbatim . ox-slimhtml-verbatim))
   :options-alist
   '((:html-extension "HTML_EXTENSION" nil org-html-extension)
     (:html-link-org-as-html nil "html-link-org-files-as-html" org-html-link-org-files-as-html)
