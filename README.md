@@ -20,6 +20,32 @@ customization of `HTML` output from `org`.
         (special-block . org-html-special-block)))
 ```
 
+## how is this useful?
+
+The aim of `slimhtml` is to provide flexibility and full control over HTML output,
+as provided by `org-export`. It is primarily of use to front-end developers, when
+the verification of an exact DOM structure is of importance.
+
+By providing minimal components that transcode `org` data into simple HTML
+structures, one can extend or build from the ground up, adding features as required.
+Naturally, this can benefit optimization efforts, code and content reuse, ease of
+customizability for CSS and JavaScript - and the maintenance of custom projects,
+especially when using `org-publish` (for blogs or custom widgets).
+
+One often overlooked feature of `org-export` is `org-export-defined-derived-backend`
+and the extensibility it provides through the easy definition and interchangeability
+of transcoders for each `org` data type. `slimhtml` focuses only on the core
+requirements of each transcoder - aside from reducing the complexity of the output,
+it's goal is to help one identify which features are required in the current problem
+space; it should also be helpful when a completely different structure is required.
+
+`slimhtml` does it's best to retain the current conventions (and settings) already
+established through the default HTML exporter, it just outputs less (or rather, a
+slim amount of) data - with one minor exception; it allows for `org-macro` expansion
+within the PREAMBLE, POSTAMBLE, HEADER, and FOOTER export settings, which is great
+for templating.
+
+
 ## org-mode HTML export transcoders
 
 
