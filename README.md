@@ -45,6 +45,28 @@ slim amount of) data - with one minor exception; it allows for `org-macro` expan
 within the PREAMBLE, POSTAMBLE, HEADER, and FOOTER export settings, which is great
 for templating.
 
+As a concrete example, the difference between the default exporter and `slimhtml` is;
+
+```
+    <div id="outline-container-orga33f743" class="outline-2">
+    <h2 id="orga33f743"><span class="section-number-2">1</span> slimhtml</h2>
+    <div class="outline-text-2" id="text-1">
+    <p>
+    <b>slimhtml</b> is an <b>emacs org mode export backend</b>. It is a set of transcoders for
+    common <code>org</code> elements which outputs minimal <code>HTML</code>. The aim is not to re-invent the wheel over the default <b>org-mode HTML exporter</b> - as it tackles a much bigger, and
+    different problem - but to provide a small set of components for easier
+    customization of <code>HTML</code> output from <code>org</code>.
+    </p>
+```
+
+```
+    <h1>slimhtml</h1>
+    <p>
+    <strong>slimhtml</strong> is an <strong>emacs org mode export backend</strong>. It is a set of transcoders for common <kbd>org</kbd> elements which outputs minimal <kbd>HTML</kbd>. The aim is not to re-invent the wheel over the default <strong>org-mode HTML exporter</strong> - as it tackles a much bigger, and different problem - but to provide a small set of components for easier
+    customization of <kbd>HTML</kbd> output from <kbd>org</kbd>.
+    </p>
+```
+
 
 ## org-mode HTML export transcoders
 
