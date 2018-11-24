@@ -20,8 +20,6 @@ customization of `HTML` output from `org`.
         (special-block . org-html-special-block)))
 ```
 
-## how is this useful?
-
 The aim of `slimhtml` is to provide flexibility and full control over HTML output,
 as provided by `org-export`. It is primarily of use to front-end developers, when
 the verification of an exact DOM structure is of importance.
