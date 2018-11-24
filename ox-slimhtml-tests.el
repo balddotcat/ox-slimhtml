@@ -1,7 +1,7 @@
 (require 'package)
 (package-initialize)
 
-(load-file "slimhtml.el")
+(load-file "ox-slimhtml.el")
 
 (defun should-render-as (expected-result org-source &optional info skip-newline)
   (let ((expected-result (if skip-newline expected-result (concat expected-result "\n")))

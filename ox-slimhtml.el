@@ -1,4 +1,4 @@
-;;; slimhtml.el --- a minimal HTML org export backend -*- lexical-binding: t; -*-
+;;; ox-slimhtml.el --- a minimal HTML org export backend -*- lexical-binding: t; -*-
 ;; Copyright (C) 2016-2018 Elo Laszlo
 
 ;; Author: Elo Laszlo <hello at bald dot cat>
@@ -504,5 +504,5 @@ Return output file name."
     (:html-title "HTML_TITLE" nil "%t" t)
     (:html-body-attr "HTML_BODY_ATTR" nil "" t)))
 
-(provide 'slimhtml)
-;;; slimhtml.el ends here
+(provide 'ox-slimhtml)
+;;; ox-slimhtml.el ends here
