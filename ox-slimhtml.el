@@ -3,7 +3,7 @@
 
 ;; Author: Elo Laszlo <hello at bald dot cat>
 ;; Created: August 2016
-;; Package-Version: 0.4.1
+;; Package-Version: 0.4.2
 ;; Keywords: files
 ;; Homepage: http://bald.cat/slimhtml
 ;; Package-Requires: ((emacs "24"))
