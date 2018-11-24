@@ -1,4 +1,4 @@
-# slimhtml
+# ox-slimhtml
 
 **slimhtml** is an **emacs org mode export backend**. It is a set of transcoders for
 common `org` elements which outputs minimal `HTML`. The aim is not to re-invent the
@@ -6,7 +6,7 @@ wheel over the default **org-mode HTML exporter** - as it tackles a much bigger,
 different problem - but to provide a small set of components for easier
 customization of `HTML` output from `org`.
 
--   [github.com/balddotcat/slimhtml](https://github.com/balddotcat/slimhtml)
+-   [github.com/balddotcat/ox-slimhtml](https://github.com/balddotcat/ox-slimhtml)
 -   [bald.cat/slimhtml](http://bald.cat/slimhtml)
 
 ```
@@ -16,7 +16,7 @@ customization of `HTML` output from `org`.
     (org-export-define-derived-backend 'custom-html-exporter
         'slimhtml                             ;; org's default exporter is 'html
       :translate-alist
-      '((bold . slimhtml-bold)                ;; technically, this is already set
+      '((bold . ox-slimhtml-bold)             ;; technically, this is already set
         (special-block . org-html-special-block)))
 ```
 
@@ -47,7 +47,7 @@ for templating.
 
 As a concrete example, the difference between the default exporter and `slimhtml` is;
 
-```
+
     <div id="outline-container-orga33f743" class="outline-2">
     <h2 id="orga33f743"><span class="section-number-2">1</span> slimhtml</h2>
     <div class="outline-text-2" id="text-1">
@@ -57,15 +57,15 @@ As a concrete example, the difference between the default exporter and `slimhtml
     different problem - but to provide a small set of components for easier
     customization of <code>HTML</code> output from <code>org</code>.
     </p>
-```
 
-```
+
+
     <h1>slimhtml</h1>
     <p>
     <strong>slimhtml</strong> is an <strong>emacs org mode export backend</strong>. It is a set of transcoders for common <kbd>org</kbd> elements which outputs minimal <kbd>HTML</kbd>. The aim is not to re-invent the wheel over the default <strong>org-mode HTML exporter</strong> - as it tackles a much bigger, and different problem - but to provide a small set of components for easier
     customization of <kbd>HTML</kbd> output from <kbd>org</kbd>.
     </p>
-```
+
 
 
 ## org-mode HTML export transcoders
@@ -203,12 +203,12 @@ As a concrete example, the difference between the default exporter and `slimhtml
           '(("project-name"
              :base-directory "~/src"
              :publishing-directory "~/public"
-             :publishing-function slimhtml-publish-to-html)))
+             :publishing-function ox-slimhtml-publish-to-html)))
 
 
 ## tests
 
     emacs -batch \
           -l ert \
-          -l slimhtml-tests.el \
+          -l ox-slimhtml-tests.el \
           -f ert-run-tests-batch-and-exit

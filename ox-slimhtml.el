@@ -3,7 +3,7 @@
 
 ;; Author: Elo Laszlo <hello at bald dot cat>
 ;; Created: August 2016
-;; Package-Version: 0.4.2
+;; Package-Version: 0.4.3
 ;; Keywords: files
 ;; Homepage: http://bald.cat/slimhtml
 ;; Package-Requires: ((emacs "24"))
@@ -488,6 +488,10 @@ Return output file name."
     (src-block . ox-slimhtml-src-block)
     (template . ox-slimhtml-template)
     (verbatim . ox-slimhtml-verbatim))
+  :menu-entry
+  '(?s "Export to slimhtml"
+       ((?H "As slimhtml buffer" ox-slimhtml-export-as-html)
+        (?h "As slimhtml file" ox-slimhtml-export-to-html)))
   :options-alist
   '((:html-extension "HTML_EXTENSION" nil org-html-extension)
     (:html-link-org-as-html nil "html-link-org-files-as-html" org-html-link-org-files-as-html)
@@ -503,6 +507,85 @@ Return output file name."
     (:html-footer "HTML_FOOTER" nil "" newline)
     (:html-title "HTML_TITLE" nil "%t" t)
     (:html-body-attr "HTML_BODY_ATTR" nil "" t)))
+
+;;;###autoload
+(defun ox-slimhtml-export-as-html
+    (&optional async subtreep visible-only body-only ext-plist)
+  "Export current buffer to a SLIMHTML buffer.
+
+Export as `org-html-export-as-html' does, with slimhtml
+org-export-backend.
+
+If narrowing is active in the current buffer, only export its
+narrowed part.
+
+If a region is active, export that region.
+
+A non-nil optional argument ASYNC means the process should happen
+asynchronously.  The resulting buffer should be accessible
+through the `org-export-stack' interface.
+
+When optional argument SUBTREEP is non-nil, export the sub-tree
+at point, extracting information from the headline properties
+first.
+
+When optional argument VISIBLE-ONLY is non-nil, don't export
+contents of hidden elements.
+
+When optional argument BODY-ONLY is non-nil, only write code
+between \"<body>\" and \"</body>\" tags.
+
+EXT-PLIST, when provided, is a property list with external
+parameters overriding Org default settings, but still inferior to
+file-local settings.
+
+Export is done in a buffer named \"*Org SLIMHTML export*\", which
+will be displayed when `org-export-show-temporary-export-buffer'
+is non-nil."
+  (interactive)
+  (org-export-to-buffer 'slimhtml "*Org SLIMHTML Export*"
+    async subtreep visible-only body-only ext-plist
+    (lambda () (set-auto-mode t))))
+
+;;;###autoload
+(defun ox-slimhtml-export-to-html (&optional async subtreep visible-only body-only ext-plist)
+  "Export current buffer to an HTML file.
+
+Export as `org-html-export-as-html' does, with slimhtml
+org-export-backend.
+
+If narrowing is active in the current buffer, only export its
+narrowed part.
+
+If a region is active, export that region.
+
+A non-nil optional argument ASYNC means the process should happen
+asynchronously.  The resulting file should be accessible through
+the `org-export-stack' interface.
+
+When optional argument SUBTREEP is non-nil, export the sub-tree
+at point, extracting information from the headline properties
+first.
+
+When optional argument VISIBLE-ONLY is non-nil, don't export
+contents of hidden elements.
+
+When optional argument BODY-ONLY is non-nil, only write code
+between \"<body>\" and \"</body>\" tags.
+
+EXT-PLIST, when provided, is a property list with external
+parameters overriding Org default settings, but still inferior to
+file-local settings.
+
+Return output file's name."
+  (interactive)
+  (let* ((extension (concat "." (or (plist-get ext-plist :html-extension)
+                                    org-html-extension
+                                    "html")))
+         (file (org-export-output-file-name extension subtreep))
+         (org-export-coding-system org-html-coding-system))
+    (org-export-to-file 'slimhtml file
+      async subtreep visible-only body-only ext-plist)))
 
 (provide 'ox-slimhtml)
 ;;; ox-slimhtml.el ends here
