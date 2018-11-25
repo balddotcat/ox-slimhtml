@@ -19,6 +19,7 @@ customization of `HTML` output from `org`.
       '((bold . ox-slimhtml-bold)             ;; technically, this is already set
         (special-block . org-html-special-block)))
 ```
+-   To export an `org-mode` buffer with the Org Export Dispatcher, use `C-c C-e s h`.
 
 The aim of `slimhtml` is to provide flexibility and full control over HTML output,
 as provided by `org-export`. It is primarily of use to front-end developers, when
