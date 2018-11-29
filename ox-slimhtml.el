@@ -6,7 +6,7 @@
 ;; Package-Version: 0.4.3
 ;; Keywords: files
 ;; Homepage: http://bald.cat/slimhtml
-;; Package-Requires: ((emacs "24"))
+;; Package-Requires: ((emacs "24") (cl-lib "0.6"))
 
 ;; This file is not part of GNU Emacs
 
@@ -34,7 +34,7 @@
 
 ;;; Code:
 (require 'ox-html)
-(eval-when-compile (require 'cl))
+(require 'cl-lib)
 
 ;; formatting
 ;; #+BEGIN_EXAMPLE
@@ -175,7 +175,7 @@ INFO is a plist holding contextual information."
 CONTENTS is the contents of the list element.
 INFO is a plist holding contextual information."
   (when contents
-    (let ((type (case (org-element-property :type plain-list)
+    (let ((type (cl-case (org-element-property :type plain-list)
                   (ordered "ol")
                   (unordered "ul")
                   (descriptive "dl"))))
@@ -470,43 +470,44 @@ Return output file name."
                         pub-dir)))
 
 ;; org-export backend definition
-(org-export-define-backend 'slimhtml
-  '((bold . ox-slimhtml-bold)
-    (example-block . ox-slimhtml-example-block)
-    (export-block . ox-slimhtml-export-block)
-    (export-snippet . ox-slimhtml-export-snippet)
-    (headline . ox-slimhtml-headline)
-    (inner-template . ox-slimhtml-inner-template)
-    (italic . ox-slimhtml-italic)
-    (item . org-html-item)
-    (link . ox-slimhtml-link)
-    (paragraph . ox-slimhtml-paragraph)
-    (plain-list . ox-slimhtml-plain-list)
-    (plain-text . ox-slimhtml-plain-text)
-    (section . ox-slimhtml-section)
-    (special-block . ox-slimhtml-special-block)
-    (src-block . ox-slimhtml-src-block)
-    (template . ox-slimhtml-template)
-    (verbatim . ox-slimhtml-verbatim))
-  :menu-entry
-  '(?s "Export to slimhtml"
-       ((?H "As slimhtml buffer" ox-slimhtml-export-as-html)
-        (?h "As slimhtml file" ox-slimhtml-export-to-html)))
-  :options-alist
-  '((:html-extension "HTML_EXTENSION" nil org-html-extension)
-    (:html-link-org-as-html nil "html-link-org-files-as-html" org-html-link-org-files-as-html)
-    (:html-doctype "HTML_DOCTYPE" nil org-html-doctype)
-    (:html-container "HTML_CONTAINER" nil org-html-container-element t)
-    (:html-link-use-abs-url nil "html-link-use-abs-url" org-html-link-use-abs-url)
-    (:html-link-home "HTML_LINK_HOME" nil org-html-link-home)
-    (:html-preamble "HTML_PREAMBLE" nil "" newline)
-    (:html-postamble "HTML_POSTAMBLE" nil "" newline)
-    (:html-head "HTML_HEAD" nil org-html-head newline)
-    (:html-head-extra "HTML_HEAD_EXTRA" nil org-html-head-extra newline)
-    (:html-header "HTML_HEADER" nil "" newline)
-    (:html-footer "HTML_FOOTER" nil "" newline)
-    (:html-title "HTML_TITLE" nil "%t" t)
-    (:html-body-attr "HTML_BODY_ATTR" nil "" t)))
+(org-export-define-backend
+ 'slimhtml
+ '((bold . ox-slimhtml-bold)
+   (example-block . ox-slimhtml-example-block)
+   (export-block . ox-slimhtml-export-block)
+   (export-snippet . ox-slimhtml-export-snippet)
+   (headline . ox-slimhtml-headline)
+   (inner-template . ox-slimhtml-inner-template)
+   (italic . ox-slimhtml-italic)
+   (item . org-html-item)
+   (link . ox-slimhtml-link)
+   (paragraph . ox-slimhtml-paragraph)
+   (plain-list . ox-slimhtml-plain-list)
+   (plain-text . ox-slimhtml-plain-text)
+   (section . ox-slimhtml-section)
+   (special-block . ox-slimhtml-special-block)
+   (src-block . ox-slimhtml-src-block)
+   (template . ox-slimhtml-template)
+   (verbatim . ox-slimhtml-verbatim))
+ :menu-entry
+ '(?s "Export to slimhtml"
+      ((?H "As slimhtml buffer" ox-slimhtml-export-as-html)
+       (?h "As slimhtml file" ox-slimhtml-export-to-html)))
+ :options-alist
+ '((:html-extension "HTML_EXTENSION" nil org-html-extension)
+   (:html-link-org-as-html nil "html-link-org-files-as-html" org-html-link-org-files-as-html)
+   (:html-doctype "HTML_DOCTYPE" nil org-html-doctype)
+   (:html-container "HTML_CONTAINER" nil org-html-container-element t)
+   (:html-link-use-abs-url nil "html-link-use-abs-url" org-html-link-use-abs-url)
+   (:html-link-home "HTML_LINK_HOME" nil org-html-link-home)
+   (:html-preamble "HTML_PREAMBLE" nil "" newline)
+   (:html-postamble "HTML_POSTAMBLE" nil "" newline)
+   (:html-head "HTML_HEAD" nil org-html-head newline)
+   (:html-head-extra "HTML_HEAD_EXTRA" nil org-html-head-extra newline)
+   (:html-header "HTML_HEADER" nil "" newline)
+   (:html-footer "HTML_FOOTER" nil "" newline)
+   (:html-title "HTML_TITLE" nil "%t" t)
+   (:html-body-attr "HTML_BODY_ATTR" nil "" t)))
 
 ;;;###autoload
 (defun ox-slimhtml-export-as-html
