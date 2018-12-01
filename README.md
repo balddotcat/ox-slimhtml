@@ -1,3 +1,5 @@
+[![MELPA](https://melpa.org/packages/ox-slimhtml-badge.svg)](https://melpa.org/#/ox-slimhtml)
+
 # ox-slimhtml
 
 **slimhtml** is an **emacs org mode export backend**. It is a set of transcoders for
