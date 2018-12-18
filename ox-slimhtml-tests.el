@@ -114,9 +114,9 @@
                     "#+attr_html: :type text/css\n#+BEGIN_STYLE\n#id{color:#f73;}\n#+END_STYLE"))
 
 (ert-deftest ox-slimhtml-src-block ()
-  (should-render-as "<code class=\"lisp\"><pre>(message 'this)\n</pre></code>"
+  (should-render-as "<pre><code class=\"lisp\">(message 'this)\n</code></pre>"
                     "#+BEGIN_SRC lisp\n  (message 'this)\n#+END_SRC")
-  (should-render-as "<code class=\"sh\"><pre>&amp;&lt;&gt;\n</pre></code>"
+  (should-render-as "<pre><code class=\"sh\">&amp;&lt;&gt;\n</code></pre>"
                     "#+BEGIN_SRC sh\n  &<>\n#+END_SRC"))
 
 (ert-deftest ox-slimhtml-template ()

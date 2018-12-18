@@ -162,9 +162,9 @@ As a concrete example, the difference between the default exporter and `slimhtml
 
 #### source code
 
-    #+BEGIN_SRC javascript                     # <code class="javascript">
-      code                                     # <pre>code</pre>
-    #+END_SRC                                  # </code>
+    #+BEGIN_SRC javascript                     # <pre>
+      code                                     # <code class="javascript">code</code>
+    #+END_SRC                                  # </pre>
 
 
 ### template
