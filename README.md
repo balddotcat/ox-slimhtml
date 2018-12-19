@@ -216,11 +216,13 @@ As a concrete example, the difference between the default exporter and `slimhtml
           -l ox-slimhtml-tests.el \
           -f ert-run-tests-batch-and-exit
 
+
 ---
 
 
 ## notes
 
 v0.4.5
--   Switch the order: <pre><code> instead of <code><pre>
+
+    Switch the order: <pre><code> instead of <code><pre>
     https://www.w3.org/TR/html50/grouping-content.html#the-pre-element
