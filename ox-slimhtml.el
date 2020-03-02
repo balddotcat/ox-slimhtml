@@ -277,9 +277,9 @@ INFO is a plist holding contextual information."
 
 ;; source code
 ;; #+BEGIN_EXAMPLE
-;;   ,#+BEGIN_SRC javascript                     # <code class="javascript">
-;;     code                                     # <pre>code</pre>
-;;   ,#+END_SRC                                  # </code>
+;;   ,#+BEGIN_SRC javascript                     # <pre>
+;;     code                                     # <code class="javascript">code</code>
+;;   ,#+END_SRC                                  # </pre>
 ;; #+END_EXAMPLE
 
 (defun ox-slimhtml-src-block (src-block contents info)
