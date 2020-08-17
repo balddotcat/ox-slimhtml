@@ -125,6 +125,13 @@ As a concrete example, the difference between the default exporter and `slimhtml
 ### blocks
 
 
+#### quotes
+
+    #+BEGIN_QUOTE                              # <blockquote><p>content</p></blockquote>
+    content
+    #+END_QUOTE
+
+
 #### examples
 
     #+BEGIN_EXAMPLE                            # content

@@ -194,7 +194,8 @@ CONTENTS is the contents of the paragraph.
 INFO is a plist holding contextual information."
   (when contents
     (if (or (ox-slimhtml--immediate-child-of-p paragraph 'item)
-            (ox-slimhtml--immediate-child-of-p paragraph 'special-block))
+            (ox-slimhtml--immediate-child-of-p paragraph 'special-block)
+            (ox-slimhtml--immediate-child-of-p paragraph 'quote-block))
         contents
       (if (ox-slimhtml--has-immediate-child-of-p paragraph 'link)
           (format "<p>%s</p>" contents)
@@ -292,6 +293,22 @@ INFO is a plist holding contextual information."
     (when code
       (format "<pre><code class=\"%s\"%s>%s</code></pre>"
               language (ox-slimhtml--attr src-block) code))))
+
+;; quote block
+;; #+BEGIN_EXAMPLE
+;;   ,#+BEGIN_QUOTE                              # <blockquote>
+;;     quoted text                              # quoted text
+;;   ,#+END_QUOTE                                # </blockquote>
+;; #+END_EXAMPLE
+
+(defun ox-slimhtml-quote-block (quote-block contents info)
+  "Transcode QUOTE-BLOCK from Org to HTML.
+
+CONTENTS is the text of a #+BEGIN_QUOTE...#+END_QUOTE block.
+INFO is a plist holding contextual information."
+  (when contents
+    (format "<blockquote%s><p>%s</p></blockquote>"
+            (ox-slimhtml--attr quote-block) contents)))
 
 ;; body
 ;; #+BEGIN_EXAMPLE
@@ -487,6 +504,7 @@ Return output file name."
    (section . ox-slimhtml-section)
    (special-block . ox-slimhtml-special-block)
    (src-block . ox-slimhtml-src-block)
+   (quote-block . ox-slimhtml-quote-block)
    (template . ox-slimhtml-template)
    (verbatim . ox-slimhtml-verbatim))
  :menu-entry
