@@ -307,7 +307,7 @@ INFO is a plist holding contextual information."
 CONTENTS is the text of a #+BEGIN_QUOTE...#+END_QUOTE block.
 INFO is a plist holding contextual information."
   (when contents
-    (format "<blockquote%s><p>%s</p></blockquote>"
+    (format "<blockquote%s>%s</blockquote>"
             (ox-slimhtml--attr quote-block) contents)))
 
 ;; body

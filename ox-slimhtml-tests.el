@@ -120,7 +120,7 @@
                     "#+BEGIN_SRC sh\n  &<>\n#+END_SRC"))
 
 (ert-deftest ox-slimhtml-quote-block ()
-  (should-render-as "<blockquote><p>this\n</p></blockquote>"
+  (should-render-as "<blockquote>this\n</blockquote>"
                     "#+BEGIN_QUOTE\nthis\n#+END_QUOTE"))
 
 (ert-deftest ox-slimhtml-template ()
