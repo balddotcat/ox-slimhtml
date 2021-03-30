@@ -134,18 +134,17 @@ Sections are child elements of org headlines;
 CONTENTS is the text of the link.
 INFO is a plist holding contextual information."
   (if (ox-slimhtml--immediate-child-of-p link 'link) (org-element-property :raw-link link)
-    (if (not contents) (format "<em>%s</em>" (org-element-property :path link))
       (let ((link-type (org-element-property :type link))
             (href (org-element-property :raw-link link))
             (attributes (if (ox-slimhtml--immediate-child-of-p link 'paragraph)
                             (ox-slimhtml--attr (org-export-get-parent link))
                           ""))
+            (path (or (org-element-property :path link) ""))
             (element "<a href=\"%s\"%s>%s</a>"))
         (cond ((string= "file" link-type)
                (let ((html-extension (or (plist-get info :html-extension) ""))
                      (use-abs-url (plist-get info :html-link-use-abs-url))
-                     (link-org-files-as-html (plist-get info :html-link-org-as-html))
-                     (path (or (org-element-property :path link) "")))
+                     (link-org-files-as-html (plist-get info :html-link-org-as-html)))
                  (format element
                          (concat (if (and use-abs-url (file-name-absolute-p path)) "file:" "")
                                  (if (and link-org-files-as-html (string= "org" (downcase (or (file-name-extension path) ""))))
@@ -154,8 +153,11 @@ INFO is a plist holding contextual information."
                                        (file-name-sans-extension path))
                                    path))
                          attributes contents)))
+              ((and (string= "fuzzy" link-type)
+                    (not contents))
+               (format "<em>%s</em>" path))
               (t
-               (format element href attributes contents)))))))
+               (format element href attributes (or contents href)))))))
 
 ;; plain lists
 ;; #+BEGIN_EXAMPLE

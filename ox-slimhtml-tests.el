@@ -89,6 +89,10 @@
   (should-render-as "<p><em>link</em></p>"
                     "[[link]]")
 
+  "non-fuzzy links without content are rendered as the full link"
+  (should-render-as "<p><a href=\"https://example.com\">https://example.com</a></p>"
+                    "[[https://example.com]]")
+
   "renders fuzzy links as is"
   (should-render-as "<p><a href=\"link\">content</a></p>"
                     "[[link][content]]")
