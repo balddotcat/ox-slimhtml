@@ -1,14 +1,13 @@
 ;;; ox-slimhtml.el --- a minimal HTML org export backend -*- lexical-binding: t; -*-
-;; Copyright (C) 2016-2018 Elo Laszlo
+;; Copyright (C) 2021 Free Software Foundation Inc.
 
 ;; Author: Elo Laszlo <hello at bald dot cat>
 ;; Created: August 2016
-;; Package-Version: 0.4.5
+;; Package-Version: 0.5.0
 ;; Keywords: files
-;; Homepage: http://bald.cat/slimhtml
 ;; Package-Requires: ((emacs "24") (cl-lib "0.6"))
 
-;; This file is not part of GNU Emacs
+;; This file is part of GNU Emacs
 
 ;;; License:
 ;; This program is free software; you can redistribute it and/or modify

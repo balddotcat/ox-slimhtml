@@ -1,5 +1,6 @@
-[![MELPA](https://melpa.org/packages/ox-slimhtml-badge.svg)](https://melpa.org/#/ox-slimhtml)
-
+slimhtml is now part of Org, included in GNU Emacs, future bug reports
+or contributions should be sent to Org directly.
+  
 # ox-slimhtml
 
 **slimhtml** is an **emacs org mode export backend**. It is a set of transcoders for
@@ -7,9 +8,6 @@ common `org` elements which outputs minimal `HTML`. The aim is not to re-invent 
 wheel over the default **org-mode HTML exporter** - as it tackles a much bigger, and
 different problem - but to provide a small set of components for easier
 customization of `HTML` output from `org`.
-
--   [github.com/balddotcat/ox-slimhtml](https://github.com/balddotcat/ox-slimhtml)
--   [bald.cat/slimhtml](http://bald.cat/slimhtml)
 
 ```
     (org-export-string-as "org content" 'slimhtml t info)

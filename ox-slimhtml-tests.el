@@ -1,3 +1,37 @@
+;;; ox-slimhtml-tests.el --- tests for slimhtml -*- lexical-binding: t; -*-
+;; Copyright (C) 2021 Free Software Foundation Inc.
+
+;; Author: Elo Laszlo <hello at bald dot cat>
+;; Created: August 2016
+;; Package-Version: 0.5.0
+;; Keywords: files
+;; Package-Requires: ((emacs "24") (cl-lib "0.6"))
+
+;; This file is part of GNU Emacs
+
+;;; License:
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+;;
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+;; along with this file.  If not, see <http://www.gnu.org/licenses/>.
+
+;;; Commentary:
+;; slimhtml is an Emacs org mode export backend.  It is a set of
+;; transcoders for common org elements which outputs minimal
+;; HTML.  The aim is not to re-invent the wheel over the default
+;; org-mode HTML exporter - as it tackles a much bigger, and
+;; different problem - but to provide a small set of components for
+;; easier customization of HTML output from org.
+
+;;; Code:
 (require 'package)
 (package-initialize)
 
@@ -202,3 +236,5 @@
                      "#+HTML_CONTAINER: \n"
                      "content")
                     'slimhtml nil '(:html-doctype "html5" :title "test" :language "hu")))))
+
+;;; ox-slimhtml-tests.el ends here
